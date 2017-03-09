@@ -1,19 +1,28 @@
 #include <stdio.h>
-int opcode;
-int rs;
-int rt;
-int rd;
-int shamt;
-int funct;
-int immediate;
-int address;
 
-//int input = 0x014B4820; //R-Type: ADD $t1 $t2 $t3
-//int input = 0x21280007; //I-Type: addi t0 t1 0x0007
-//int input = 0x3008FFFF; //I-Type: andi $t0,$zero,0xFFFF
-int input = 0x08000004; //J-Type: j 0x0004
+class Decode{
+    // int opcode,rs,rt,rd, shamt, funct, immediate,address;
+    public:
+        int opcode,rs,rt,rd, shamt, funct, immediate,address, input;
+        Decode ();
+        void decodeR();
+        void decodeI();
+        void decodeJ();
+} id; 
 
-void decodeR(){
+Decode::Decode(){
+    // Add input as a parameter for later rev
+
+    //int input = 0x014B4820; //R-Type: ADD $t1 $t2 $t3
+    //int input = 0x21280007; //I-Type: addi t0 t1 0x0007
+    int input = 0x3008FFFF; //I-Type: andi $t0,$zero,0xFFFF
+    // input = 0x08000004; //J-Type: j 0x0004
+    
+    opcode = input >> 26;
+
+}
+
+void Decode::decodeR(){
   printf("R-Type\n");
   rs = ((input >> 21) & 0b00000000000000000000000000011111);
   rt = ((input >> 16) & 0b00000000000000000000000000011111);
@@ -28,7 +37,7 @@ void decodeR(){
             
 }
 
-void decodeI(){
+void Decode::decodeI(){
   printf("I-Type\n");
   rs = ((input >> 21) & 0b00000000000000000000000000011111);
   rt = ((input >> 16) & 0b00000000000000000000000000011111);
@@ -38,25 +47,21 @@ void decodeI(){
   printf("Immediate = %d\n",immediate);
 }
 
-void decodeJ(){
+void Decode::decodeJ(){
   printf("J-Type\n");
   address = (input & 0b00000011111111111111111111111111);
   printf("Address = %x\n",address);
 }
 
 int main(){
-  opcode = input >> 26;
-  printf("Op Code = %x -> ",opcode);
-  switch(opcode){
-    case 0: decodeR();
+  Decode id;
+  printf("Op Code = %x -> ",id.opcode);
+  switch(id.opcode){
+    case 0: id.decodeR();
             break;
-    case 0x2: decodeJ();
+    case 0x2: id.decodeJ();
             break;
-    case 0xc: decodeI();
-            break;
-    case 0x8: decodeI();
-            break;
-     //put other case opcode case statements here for 
+    default: id.decodeI();
   }
   return(0);
 }
