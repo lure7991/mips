@@ -2,6 +2,7 @@
 #include "ID.hpp"
 
 const int GLOBAL_CONST_MEMORY= 100000;    //PC inc. by 1 byte, not 4; Branch/Jump offset already aligned (no << 2)
+
 int main(){
 //**** Fetch Pipeline *****//
   int PC = 0; 
