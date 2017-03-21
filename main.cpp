@@ -2,6 +2,8 @@
 #include "ID.hpp"
 
 const int GLOBAL_CONST_MEMORY= 100000;    //PC inc. by 1 byte, not 4; Branch/Jump offset already aligned (no << 2)
+int reg[32]; //need code to put ID answers into their regs
+
 int main(){
 //**** Fetch Pipeline *****//
   int PC = 0; 
@@ -18,5 +20,6 @@ int main(){
     default: id.decodeI();
   }
   printf("Decoded instruction complete");
+  
   return(0);
 }
