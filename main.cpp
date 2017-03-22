@@ -24,6 +24,7 @@ int main(){
   // printf("%d\n", PC);
 //**** Decode Pipeline *****//
   Decode id;
+  id.input= IF.hexInstruction;
   printf("In Decode Stage\n");
   switch(id.opcode){
     case 0: id.decodeR();

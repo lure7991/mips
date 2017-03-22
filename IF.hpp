@@ -59,6 +59,8 @@ void Fetch::getInst(){
 }
 
 void Fetch::fetchIF(int global_mem[]){
+	//Add Branch compatiblity 
 	global_mem[hexPC]= hexInstruction;
 	cout<<global_mem[hexPC]<<endl; 
+	hexPC= hexPC+1; 
 }
