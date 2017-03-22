@@ -6,19 +6,19 @@
 using namespace std;
 
 
-const int GLOBAL_CONST_MEMORY= 100000;    //PC inc. by 1 byte, not 4; Branch/Jump offset already aligned (no << 2)
+const int MEM_SIZE = 1000000000;    //PC inc. by 1 byte, not 4; Branch/Jump offset already aligned (no << 2)
 // <<<<<<< HEAD
 // =======
-int GLOBAL_REGS[32]; //need code to put ID answers into their regs
+int REGISTERS[32]; //need code to put ID answers into their regs
+int MEMORY[MEM_SIZE]= {};
 // >>>>>>> 1281814237362624300a28fc2843fe5f470d4747
 
 int main(){
 //**** Fetch Pipeline *****//
   Fetch IF;
-  ofstream myfile; 
-  myfile.open("PC.txt");
-  myfile << "Writing to this file";
-  myfile.close();
+  IF.getPC();
+  IF.getInst();
+  IF.fetchIF(MEMORY);
   // char PC=0;
   // PC= fopen("/Users/aliciaharper/Desktop/mips/PC", "r")
   // printf("%d\n", PC);
