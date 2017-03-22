@@ -9,7 +9,9 @@ int function;
 int shamt;
 int immediate;
 int address;
+int jumpAddress;
 int pc;	
+int ra;
 int rd;
 int rt;
 int rs;
@@ -81,23 +83,54 @@ void executeI(){
 }
 
 void executeJ(){
-
+	printf("\nStarting Values:\n");
+	printf("PC = %X\n",pc);
+	printf("ra = %X\n",ra);
+	printf("Adress = %X\n",address);
+	
+	pc += 1;
+	jumpAddress = (pc & 0b11110000000000000000000000000000)|(address << 2);
+	
+	switch(opcode){ //choose command based on r-type function
+		case 0x2: printf("\nExecuting: Jump\n");
+						pc = jumpAddress;
+            break;
+		case 0x3: printf("Executing: Jump and Link\n"); 
+            ra = pc + 2;
+						pc = jumpAddress;
+						break;
+  }   
+	
+	printf("\nEnding Values:\n");
+	printf("PC = %X\n",pc);
+	printf("ra = %X\n",ra);
+	printf("Jump Adress = %X\n",jumpAddress);
 }
 
 int main(){
 	//put exmaple values in here:  ///////////////////////////////
 	//normally these would be passed in from previous pipelines///
 	
-	//example for R-Type: ADD $t1 $t2 $t3
-	opcode = 0;
-	function = 0x20;
-	shamt = 0;
-	//immediate;
-	//address;
-	//pc;	
-	int rd_reg = 9;
-	int rt_reg = 10;
-	int rs_reg = 11;
+	int rd_reg = 0;
+	int rs_reg = 0;
+	int rt_reg = 0;
+	
+// 	//example for R-Type: ADD $t1 $t2 $t3
+// 	opcode = 0;
+// 	function = 0x20;
+// 	shamt = 0;
+//  rd_reg = 9;
+//  rt_reg = 10;
+// 	rs_reg = 11;
+// 	//immediate;
+// 	//address;
+// 	//pc;
+	
+	//example for J-Type: J 0x0200811 
+	pc = 0x80aa00ef;
+	opcode = 0x2;
+	address = 0x200811;
+	
 	
 	//////////////////////////////////////////////////////////////
 	
