@@ -29,6 +29,7 @@ void Decode::decodeR(){
   rd = ((input >> 11) & 0b00000000000000000000000000011111);
   shamt = ((input >> 6) & 0b00000000000000000000000000011111);
   funct = (input & 0b00000000000000000000000000111111);
+  // CLK++;
   // printf("Rd = %d\n",rd);
   // printf("Rs = %d\n",rs);
   // printf("Rt = %d\n",rt);
@@ -42,6 +43,7 @@ void Decode::decodeI(){
   rs = ((input >> 21) & 0b00000000000000000000000000011111);
   rt = ((input >> 16) & 0b00000000000000000000000000011111);
   immediate = (input & 0b00000000000000001111111111111111);
+  // CLK++;
   // printf("Rs = %d\n",rs);
   // printf("Rt = %d\n",rt);
   // printf("Immediate = %d\n",immediate);
@@ -50,5 +52,6 @@ void Decode::decodeI(){
 void Decode::decodeJ(){
   // printf("J-Type\n");
   address = (input & 0b00000011111111111111111111111111);
+  // CLK++; 
   // printf("Address = %x\n",address);
 }
