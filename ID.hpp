@@ -52,6 +52,30 @@ void Decode::decodeI(){
 void Decode::decodeJ(){
   // printf("J-Type\n");
   address = (input & 0b00000011111111111111111111111111);
+  
+  printf("\nStarting Values (ID pipeline):\n");
+	printf("PC = %X\n",pc);
+	printf("ra = %X\n",ra);
+	printf("Adress = %X\n",address);
+	
+	pc += 1;
+	jumpAddress = (pc & 0b11110000000000000000000000000000)|(address << 2);
+	
+	switch(opcode){ //choose command based on r-type function
+		case 0x2: printf("\nExecuting: Jump\n");
+						pc = jumpAddress;
+            break;
+		case 0x3: printf("Executing: Jump and Link\n"); 
+            ra = pc + 2;
+						pc = jumpAddress;
+						break;
+  }   
+	
+	printf("\nEnding Values (ID Pipeline):\n");
+	printf("PC = %X\n",pc);
+	printf("ra = %X\n",ra);
+	printf("Jump Adress = %X\n",jumpAddress);
+  
   // CLK++; 
   // printf("Address = %x\n",address);
 }
