@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 //fill register with numbers to be used in testing, normally not needed
 int reg[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31};
@@ -78,11 +79,112 @@ void executeR(){ //function to check for specific r-type command and execute
   printf("Rs = %d\n\n",rs);
 }
 
+int branchAddress(int i){
+	int branchAddress = 0;
+	int signExtendBit = 0b1000000000000000 & i;
+	if(signExtendBit){
+		branchAddress = i << 2;
+		branchAddress = branchAddress | 0b11111111111111000000000000000000;
+	}
+	else if(!signExtendBit){
+		branchAddress = i << 2;
+		//i think the computer keeps numbers 0 filled
+		//so if the sign extend bit is 0, just leave the stuff how it is
+	}
+	return branchAddress;
+}
+
+int signExtend(int i){
+	int signExtendBit = 0b1000000000000000 & i;
+	if(signExtendBit){
+		i = i | 0b11111111111111110000000000000000;
+	}
+	return i;
+}
+
 void executeI(){
-	
+	printf("\nStarting Values:\n");
+	printf("PC = %X\n",pc);
+  printf("Rt = %d\n",immediate);
+	printf("Rt = %d\n",rt);
+  printf("Rs = %d\n\n",rs);
+
+	switch(opcode){ //choose command based on r-type function
+		case 0x8: printf("Executing: addi\n");
+						rt = rs + immediate;
+						printf("rt = %d\n",rd);
+            break;
+		case 0x9: printf("Executing: addiu\n"); 
+						rt = rs + abs(immediate);
+						printf("rt = %d\n",rd);
+            break;
+		case 0xc: printf("Executing: andi\n"); 
+						rt = rs & immediate;
+						printf("rt = %d\n",rd);
+            break;
+		case 0x4: printf("Executing: beq\n"); 
+						if(rs==rt){
+							printf("Branch Taken\n");
+							pc = pc + 1 + branchAddress(immediate);
+						} 
+            break;
+		case 0x5: printf("Executing: bne\n"); 
+						if(rs!=rt){
+							printf("Branch Taken\n");
+							pc = pc + 1 + branchAddress(immediate);
+						} 
+            break;
+		case 0x24: printf("Executing: lbu\n"); 
+						//uh oh
+            break;
+		case 0x25: printf("Executing: lhu\n"); 
+						//uh oh
+            break;
+		case 0x30: printf("Executing: ll\n"); 
+						//uh oh
+            break;
+		case 0xf: printf("Executing: lui\n"); 
+						//uh oh
+            break;
+		case 0x23: printf("Executing: lw\n"); 
+						//uh oh
+            break;
+		case 0xd: printf("Executing: ori\n"); 
+						rt = rs | immediate;
+						printf("rt = %d\n",rd);
+            break;
+		case 0xa: printf("Executing: slti\n"); 
+						if(rs < immediate) rt = 1;
+						else rt = 0;
+						printf("rt = %d\n",rd);
+            break;
+		case 0xb: printf("Executing: sltiu\n"); 
+						if(abs(rs) < abs(immediate)) rt = 1;
+						else rt = 0;
+						printf("rt = %d\n",rd);
+            break;
+		case 0x28: printf("Executing: sb\n"); 
+						//uh oh
+            break;
+		case 0x38: printf("Executing: sc\n"); 
+						//uh oh
+            break;
+		case 0x29: printf("Executing: sh\n"); 
+						//uh oh
+            break;
+		case 0x2b: printf("Executing: sw\n"); 
+						//uh oh
+            break;
+  }   
+	printf("\nEnding Values:\n");
+	printf("PC = %X\n",pc);
+  printf("Rt = %d\n",immediate);
+	printf("Rt = %d\n",rt);
+  printf("Rs = %d\n\n",rs);
 }
 
 void executeJ(){
+	/* The following commented code was moved to ID pipeline
 	printf("\nStarting Values:\n");
 	printf("PC = %X\n",pc);
 	printf("ra = %X\n",ra);
@@ -105,6 +207,7 @@ void executeJ(){
 	printf("PC = %X\n",pc);
 	printf("ra = %X\n",ra);
 	printf("Jump Adress = %X\n",jumpAddress);
+	*/
 }
 
 int main(){
@@ -115,7 +218,7 @@ int main(){
 	int rs_reg = 0;
 	int rt_reg = 0;
 	
-// 	//example for R-Type: ADD $t1 $t2 $t3
+// 	example for R-Type: ADD $t1 $t2 $t3
 // 	opcode = 0;
 // 	function = 0x20;
 // 	shamt = 0;
@@ -126,11 +229,16 @@ int main(){
 // 	//address;
 // 	//pc;
 	
-	//example for J-Type: J 0x0200811 
-	pc = 0x80aa00ef;
-	opcode = 0x2;
-	address = 0x200811;
+//	example for J-Type: J 0x0200811 
+// 	pc = 0x80aa00ef;
+// 	opcode = 0x2;
+// 	address = 0x200811;
 	
+//	example for I-Type: addi s0 t1 0xffff
+	opcode = 0b001000;
+	immediate = 0xffff;
+	rt = 0b01001;
+	rs = 0b10000;
 	
 	//////////////////////////////////////////////////////////////
 	
