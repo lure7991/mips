@@ -15,16 +15,20 @@ int MEMORY[MEM_SIZE]= {};
 
 int main(){
 //**** Fetch Pipeline *****//
-  Fetch IF;
+/*  Fetch IF;
   IF.getPC();
   IF.getInst();
   IF.fetchIF(MEMORY);
   // char PC=0;
   // PC= fopen("/Users/aliciaharper/Desktop/mips/PC", "r")
   // printf("%d\n", PC);
+  
+  printf("%u\n", IF.hexPC);
+ */
 //**** Decode Pipeline *****//
   Decode id;
-  id.input= IF.hexInstruction;
+  //id.input= IF.hexInstruction;
+  id.input = 0x3008FFFF;
   printf("In Decode Stage\n");
   switch(id.opcode){
     case 0: id.decodeR();

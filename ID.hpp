@@ -3,7 +3,7 @@
 class Decode{
     // int opcode,rs,rt,rd, shamt, funct, immediate,address;
     public:
-        int opcode,rs,rt,rd, shamt, funct, immediate,address, input;
+        int pc, opcode,rs,rt,rd,ra, shamt, funct, immediate,address, jumpAddress, input;
         Decode ();
         void decodeR();
         void decodeI();
@@ -15,7 +15,7 @@ Decode::Decode(){
 
     //int input = 0x014B4820; //R-Type: ADD $t1 $t2 $t3
     //int input = 0x21280007; //I-Type: addi t0 t1 0x0007
-    int input = 0x3008FFFF; //I-Type: andi $t0,$zero,0xFFFF
+    //input = 0x3008FFFF; //I-Type: andi $t0,$zero,0xFFFF
     // input = 0x08000004; //J-Type: j 0x0004
 
     opcode = input >> 26;
@@ -34,8 +34,7 @@ void Decode::decodeR(){
   // printf("Rs = %d\n",rs);
   // printf("Rt = %d\n",rt);
   // printf("Shamt = %d\n",shamt);
-  // printf("Function = %x\n",funct);
-            
+  // printf("Function = %x\n",funct);    
 }
 
 void Decode::decodeI(){
@@ -43,6 +42,11 @@ void Decode::decodeI(){
   rs = ((input >> 21) & 0b00000000000000000000000000011111);
   rt = ((input >> 16) & 0b00000000000000000000000000011111);
   immediate = (input & 0b00000000000000001111111111111111);
+  if(immediate & 0b00000000000000001000000000000000){
+    immediate = immediate & 0b00000000000000000111111111111111;
+    immediate = immediate ^ 0b00000000000000000111111111111111;
+    immediate = -1 * (immediate + 0b00000000000000000000000000000001);
+  }
   // CLK++;
   // printf("Rs = %d\n",rs);
   // printf("Rt = %d\n",rt);
@@ -53,10 +57,10 @@ void Decode::decodeJ(){
   // printf("J-Type\n");
   address = (input & 0b00000011111111111111111111111111);
   
-  printf("\nStarting Values (ID pipeline):\n");
-	printf("PC = %X\n",pc);
-	printf("ra = %X\n",ra);
-	printf("Adress = %X\n",address);
+//  printf("\nStarting Values (ID pipeline):\n");
+// 	printf("PC = %X\n",pc);
+// 	printf("ra = %X\n",ra);
+// 	printf("Adress = %X\n",address);
 	
 	pc += 1;
 	jumpAddress = (pc & 0b11110000000000000000000000000000)|(address << 2);
@@ -71,10 +75,10 @@ void Decode::decodeJ(){
 						break;
   }   
 	
-	printf("\nEnding Values (ID Pipeline):\n");
-	printf("PC = %X\n",pc);
-	printf("ra = %X\n",ra);
-	printf("Jump Adress = %X\n",jumpAddress);
+// 	printf("\nEnding Values (ID Pipeline):\n");
+// 	printf("PC = %X\n",pc);
+// 	printf("ra = %X\n",ra);
+// 	printf("Jump Adress = %X\n",jumpAddress);
   
   // CLK++; 
   // printf("Address = %x\n",address);
