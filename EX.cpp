@@ -4,17 +4,9 @@
 //fill register with numbers to be used in testing, normally not needed
 int reg[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31};
 
+int opcode, function, shamt, immediate, address, jumpAddress, pc, ra, rd, rt, rs;
 
-class Execute{
-	public:
-			//initalize variables
-			int opcode, function, shamt, immediate, address, jumpAddress, pc, ra, rd, rt, rs;
-			void executeR();
-			void executeI();
-			void executeJ();
-} ex;
-
-void Execute::executeR(){ //function to check for specific r-type command and execute
+void executeR(){ //function to check for specific r-type command and execute
 	printf("\nStarting Values:\n");
 	printf("PC = %X\n",pc);
 	printf("Function = %X\n",function);
@@ -99,7 +91,7 @@ int signExtend(int i){
 	return i;
 }
 
-void Execute::executeI(){
+void executeI(){
 	printf("\nStarting Values:\n");
 	printf("PC = %X\n",pc);
   printf("Rt = %d\n",immediate);
@@ -180,7 +172,7 @@ void Execute::executeI(){
   printf("Rs = %d\n\n",rs);
 }
 
-void Execute::executeJ(){
+void executeJ(){
 	/* The following commented code was moved to ID pipeline
 	printf("\nStarting Values:\n");
 	printf("PC = %X\n",pc);
@@ -207,7 +199,7 @@ void Execute::executeJ(){
 	*/
 }
 
-/*
+
 int main(){
 	//put exmaple values in here:  ///////////////////////////////
 	//normally these would be passed in from previous pipelines///
@@ -256,4 +248,4 @@ int main(){
   }
 	
   return(0);
-}*/
+}
