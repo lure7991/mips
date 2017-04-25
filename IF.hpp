@@ -14,8 +14,8 @@ using namespace std;
 //Get PC val from main which may come from outside file?
 class Fetch{
 	 public:
-	 	unsigned long hexInstruction;
-	 	unsigned long hexPC;
+	 	int instruction;
+	 	int PC;
 	 	string instruction;
 	 	string PC; //Change to array to hold multiple instructions? 
 	 	Fetch (); 
@@ -36,9 +36,9 @@ void Fetch::getPC(){
 	pcFile.open("PC.txt");
 	if (pcFile.is_open()){
 		while(getline (pcFile, PC)){
-			hexPC = stol(PC,nullptr, 16);
+			//hexPC = stol(PC,nullptr, 16);
 			// cout<<hexPC<< endl;
-			// cout<<PC<<endl;
+			cout<<PC<<endl;
 		}
 	}
 	pcFile.close();
@@ -49,9 +49,8 @@ void Fetch::getInst(){
 	instructionFile.open("instruction.txt");
 	if(instructionFile.is_open()){
 		while (getline(instructionFile, instruction)){
-			hexInstruction= stol(instruction, nullptr, 16);
-
-			cout<<hexInstruction<<endl;
+			//hexInstruction= stol(instruction, nullptr, 16);
+			//cout<<hexInstruction<<endl;
 			cout<<instruction<<endl;
 			//Place values into array ALT
 		}
@@ -60,7 +59,9 @@ void Fetch::getInst(){
 
 void Fetch::fetchIF(int global_mem[]){
 	//Add Branch compatiblity 
-	global_mem[hexPC]= hexInstruction;
-	cout<<global_mem[hexPC]<<endl; 
-	hexPC= hexPC+1; 
+	//global_mem[hexPC]= hexInstruction;
+	global_mem[PC]= instruction;
+	//cout<<global_mem[PC]<<endl; 
+	//hexPC= hexPC+1;
+	PC= hexPC+1;
 }
