@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 class Decode{
-    // int opcode,rs,rt,rd, shamt, funct, immediate,address;
+    //int pc, opcode,rs,rt,rd,ra, shamt, funct, immediate,address, jumpAddress, input;
     public:
         int pc, opcode,rs,rt,rd,ra, shamt, funct, immediate,address, jumpAddress, input;
         Decode ();

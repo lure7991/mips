@@ -1,10 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-//fill register with numbers to be used in testing, normally not needed
-int reg[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31};
-
-
 class Execute{
 	public:
 			//initalize variables
@@ -206,54 +202,3 @@ void Execute::executeJ(){
 	printf("Jump Adress = %X\n",jumpAddress);
 	*/
 }
-
-/*
-int main(){
-	//put exmaple values in here:  ///////////////////////////////
-	//normally these would be passed in from previous pipelines///
-	
-	int rd_reg = 0;
-	int rs_reg = 0;
-	int rt_reg = 0;
-	
-// 	example for R-Type: ADD $t1 $t2 $t3
-// 	opcode = 0;
-// 	function = 0x20;
-// 	shamt = 0;
-//  rd_reg = 9;
-//  rt_reg = 10;
-// 	rs_reg = 11;
-// 	//immediate;
-// 	//address;
-// 	//pc;
-	
-//	example for J-Type: J 0x0200811 
-// 	pc = 0x80aa00ef;
-// 	opcode = 0x2;
-// 	address = 0x200811;
-	
-//	example for I-Type: addi s0 t1 0xffff
-	opcode = 0b001000;
-	immediate = 0xffff;
-	rt = 0b01001;
-	rs = 0b10000;
-	
-	//////////////////////////////////////////////////////////////
-	
-	//start by taking in reg values
-	rd = reg[rd_reg]; 
-	rt = reg[rt_reg];
-	rs = reg[rs_reg];
-	
-  switch(opcode){ //select format
-    case 0: executeR();
-						reg[rd_reg] = rd; //save the new rd back to the reg
-						//if command is jr, note that pc is changed in the executeR() 
-            break;
-    case 0x2: executeJ();
-            break;
-    default: executeI();
-  }
-	
-  return(0);
-}*/
