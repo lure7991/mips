@@ -4,18 +4,15 @@ class Decode{
     //int pc, opcode,rs,rt,rd,ra, shamt, funct, immediate,address, jumpAddress, input;
     public:
         int pc, opcode,rs,rt,rd,ra, shamt, funct, immediate,address, jumpAddress, input;
-        Decode ();
         void decodeR();
         void decodeI();
         void decodeJ();
 				void setOP();
 } id; 
 
-Decode::Decode(){
-}
-
 void Decode::setOP(){
-	 opcode = input >> 26;
+	 opcode = (input >> 26) & (0b00000000000000000000000000111111);
+	 //printf("	Opcode: 0x%x\n",opcode);
 }
 
 void Decode::decodeR(){
