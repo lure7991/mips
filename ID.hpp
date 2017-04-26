@@ -48,5 +48,6 @@ void Decode::decodeJ(){
             ra = pc + 2;
 						pc = jumpAddress;
 						break;
+		default: printf("	Invalid Command\n");
   }   
 }

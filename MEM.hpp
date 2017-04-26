@@ -9,9 +9,9 @@ class Memory{
 } mem;
 
 void Memory::store(){
-	printf("reached mem store\n");
+	printf("	Reached mem store\n");
 }
 
 void Memory::load(){
-	printf("reached mem store\n");
+	printf("	Reached mem store\n");
 }

@@ -1,11 +1,14 @@
 #include <stdio.h>
 #include <fstream>
 #include <iostream>
-//#include "IF.hpp"
+#include <string>
+#include <cstdio>
+#include <cstdlib>
+
 #include "ID.hpp"
 #include "EX.hpp"
 #include "MEM.hpp"
-//#include "WB.hpp"
+
 
 using namespace std;
 
@@ -13,6 +16,9 @@ const int mem_size = 1000000000;    //PC inc. by 1 byte, not 4; Branch/Jump offs
 
 int reg[32] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31}; //need code to put ID answers into their regs
 int memory[mem_size]= {};
+
+int instruction[1024];
+int instructionIndex = 0;
 
 int opcode[4];
 int rd[4] = {0,0,0,0};
@@ -27,20 +33,42 @@ int immediate[4];
 
 //other///////////////////////////////////////////////
 // >>>>>>> 1281814237362624300a28fc2843fe5f470d4747
+//to compile on lucas machine: g++ -mcmodel=medium -Wall -Wextra -o output main.cpp
 //////////////////////////////////////////////////////
 
 int main(){
+	
+//Instruction Fetch Pipeline//////////////////////////////////////////////////////////////
+printf("\nInstruction Fetch:\n\n");
+	
+	string instructionInput;
+  ifstream inputFile("instruction.txt");
+	
+	instructionIndex = 0;
+  if (inputFile.is_open()){
+		instructionIndex = 0;
+    while (getline(inputFile,instructionInput)){
+    	instruction[instructionIndex] = strtoul(instructionInput.substr(2, 10).c_str(), NULL, 16);
+			instructionIndex++;
+    }
+    inputFile.close();
+  } 
+	instruction[instructionIndex] = -1;
+	
+	printf("	Instruction Fetch: 0x%x\n",instruction[0]);
+	
 //Decode Pipeline//////////////////////////////////////////////////////////////////////////
 printf("\nDecode:\n\n");
 Decode id;
-  
+	
+	id.input = instruction[0];
   //example inputs/////////////////////////////////////////
   //id.input = 0x014B4820; //R-Type: ADD $t1 $t2 $t3
   //id.input = 0x21280007; //I-Type: addi t0 t1 0x0007
   //id.input = 0x3008FFFF; //I-Type: andi $t0,$zero,0xFFFF
   //id.input = 0x08000004; //J-Type: j 0x0004
   //id.input = 0x3008FFFF;
-	id.input = 0x8d090000; //I-Type: lw $t1, 0($t0)
+	//id.input = 0x8d090000; //I-Type: lw $t1, 0($t0)
 	//id.input = 0xad090000; //I-Type: sw $t1, 0($t0)
 	/////////////////////////////////////////////////////////
 	
@@ -165,7 +193,7 @@ mem.function = funct[3];
 
 	printf("	Mem Opcode: 0x%x\n", mem.opcode);
 	switch(mem.opcode){
-		case 0x24:  
+		case 0x24: 
 						mem.load();
             break;
 		case 0x25:  
@@ -193,6 +221,7 @@ mem.function = funct[3];
 						mem.store();
             break;
 	}
+	printf("\n");
 	
 //****MEM-WB Shadow Variables***************************************************************
 	
@@ -203,8 +232,14 @@ mem.function = funct[3];
 	address[4] = address[3];
 	shamt[4] = shamt[3];
 	funct[4] = funct[3];
-	
+
 //Write-Back Pipeline//////////////////////////////////////////////////////////////////////////
+	printf("	Reg values after pipeline: \n\n");
+	int i;
+	for(i=0; i<32; i++){
+		printf("	Reg #%d = %d\n",i,reg[i]);
+	}
+	printf("\n");
 
   return(0);
 }

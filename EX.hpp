@@ -26,7 +26,8 @@ void Execute::executeR(){ //function to check for specific r-type command and ex
 						//printf("rd = %d\n",rd);
             break;
 		case 0x21: printf("	Executing: addu\n"); 
-            break;
+	  				rd = abs(rs) + abs(rt);          
+						break;
 		case 0x24: printf("	Executing: and\n");
             rd = rs & rt;
 						//printf("rd = %d\n",rd);
@@ -48,6 +49,8 @@ void Execute::executeR(){ //function to check for specific r-type command and ex
 						//printf("rd = %d\n",rd);
             break;
 		case 0x02b: printf("	Executing: sltu\n");
+						if(abs(rs) < abs(rt)) rd = 1;
+						else if(abs(rs) > abs(rt)) rd = 0;
             break;
 		case 0x00: printf("	Executing: sll\n");
             rd = rt << shamt;
@@ -62,7 +65,9 @@ void Execute::executeR(){ //function to check for specific r-type command and ex
 						//printf("rd = %d\n",rd);
             break;
 		case 0x23: printf("	Executing: subu\n");
+						rd = abs(rs) - (rt);
             break;
+		default: printf("	Invalid Command\n");
   }
 /*
 	printf("\nEnding Values:\n");
@@ -172,6 +177,7 @@ void Execute::executeI(){
 		case 0x2b: printf("	Executing: sw\n"); 
 						//uh oh
             break;
+		default: printf("	Invalid Command\n");
   }
 /*
 	printf("\nEnding Values:\n");

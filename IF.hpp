@@ -16,8 +16,8 @@ class Fetch{
 	 public:
 	 	int instruction;
 	 	int PC;
-	 	string instruction;
-	 	string PC; //Change to array to hold multiple instructions? 
+	 	//string instruction;
+	 	//string PC; //Change to array to hold multiple instructions? 
 	 	Fetch (); 
 	 	void getPC();
 	 	void getInst();
