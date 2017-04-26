@@ -9,13 +9,13 @@
 #include "EX.hpp"
 #include "MEM.hpp"
 
-
 using namespace std;
 
-const int mem_size = 1000000000;    //PC inc. by 1 byte, not 4; Branch/Jump offset already aligned (no << 2)
+int cycleCount = 0;
 
-int reg[32] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31}; //need code to put ID answers into their regs
-int memory[mem_size]= {};
+//int reg[32] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31}; //need code to put ID answers into their regs
+int reg[32];
+int memory[1200];
 
 int instruction[1024];
 int instructionIndex = 0;
@@ -27,6 +27,8 @@ int rt[4] = {0,0,0,0};
 int shamt[4];
 int funct[4];
 int pc;
+int sp;
+int fp;
 int ra;
 int address[4];
 int immediate[4];
@@ -55,13 +57,27 @@ printf("\nInstruction Fetch:\n\n");
   } 
 	instruction[instructionIndex] = -1;
 	
-	printf("	Instruction Fetch: 0x%x\n",instruction[0]);
+	sp = instruction[0];
+	fp = instruction[1];
+	pc = instruction[5];
+	
+	printf("	sp = 0x%x\n",sp);
+	printf("	fp = 0x%x\n",fp);
+	printf("	pc = 0x%x\n",pc);
+	
+	int answer = 1;
+	int nextInstruction = 10;
+	
+									//while(instruction[cycleCount] != -1){
+									while(answer){
+										printf("\nInstruction Fetch:\n\n");
+										printf("\n	Instruction: 0x%x\n",instruction[nextInstruction]);
 	
 //Decode Pipeline//////////////////////////////////////////////////////////////////////////
 printf("\nDecode:\n\n");
 Decode id;
 	
-	id.input = instruction[0];
+	id.input = instruction[nextInstruction];
   //example inputs/////////////////////////////////////////
   //id.input = 0x014B4820; //R-Type: ADD $t1 $t2 $t3
   //id.input = 0x21280007; //I-Type: addi t0 t1 0x0007
@@ -105,6 +121,11 @@ Decode id;
               printf("		 ra = 0x%x\n",ra);
               printf("		 Adress = 0x%x\n\n",address[1]);    
               break;
+		case 0x1f:
+							id.special();
+							rd[1] = id.rd;
+							printf("\n	Recieved Special Type: seb\n");
+              printf("		 Rd = %d\n",reg[rd[1]]);
     default: 
               id.decodeI();
               rs[1] = id.rs;
@@ -147,7 +168,7 @@ ex.function = funct[2];
 						//note that pc is changed during the id pipeline
 						
 						printf("\n	Result: ");
-						printf("Rd = %d\n",reg[rd[2]]);
+						printf("Writing: Rd = %d to Reg #%d\n",reg[rd[2]], rd[2]);
             break;
     case 0x2: 
 						ex.executeJ();
@@ -155,17 +176,22 @@ ex.function = funct[2];
 						pc = ex.pc;
 						
 						printf("\n	Result: ");
-						printf("ra = %d\n",ra);
+						printf("ra = %d \n",ra);
 						printf("		pc = %d\n",pc);
             break;
+		case 0x1f: 
+						ex.special();
+						reg[rt[2]] = ex.rt;
+						
+						printf("\n	Result: ");
+						printf("Writing: Rt = %d to Reg #%d\n",reg[rt[2]], rt[2]);
     default: 
 						ex.executeI();
 						pc = ex.pc;
 						reg[rt[2]] = ex.rt;
-						//stuff gets stored from this part in mem stage too
 						
 						printf("\n	Result: ");
-						printf("Rt = %d\n",reg[rt[2]]);
+						printf("Writing: Rt = %d to Reg #%d\n",reg[rt[2]], rt[2]);
   }
   printf("\n");
 	
@@ -234,12 +260,26 @@ mem.function = funct[3];
 	funct[4] = funct[3];
 
 //Write-Back Pipeline//////////////////////////////////////////////////////////////////////////
+	
 	printf("	Reg values after pipeline: \n\n");
 	int i;
 	for(i=0; i<32; i++){
 		printf("	Reg #%d = %d\n",i,reg[i]);
 	}
 	printf("\n");
-
+	
+////////////////////////////////////END OF PIPELINE/////////////////////////////////////////////////////////////
+	cycleCount++;
+	nextInstruction++;
+	printf("\nCurrent Cycle Count = %d\n\n",cycleCount);
+	
+				printf("\nWould you like to run another instruction? (1/0) --> ");
+				scanf("%d", &answer);
+				if(!answer){
+					printf("\nFinal Cycle Count = %d\n\n",cycleCount);
+					return(0);
+				}
+	}
+	printf("\nFinal Cycle Count = %d\n\n",cycleCount);
   return(0);
 }

@@ -8,6 +8,7 @@ class Execute{
 			void executeR();
 			void executeI();
 			void executeJ();
+			void special();
 } ex;
 
 void Execute::executeR(){ //function to check for specific r-type command and execute
@@ -67,6 +68,15 @@ void Execute::executeR(){ //function to check for specific r-type command and ex
 		case 0x23: printf("	Executing: subu\n");
 						rd = abs(rs) - (rt);
             break;
+		case 0xb: printf("	Executing: movn\n");
+						if(rt) rd = rs;
+            break;
+		case 0xa: printf("	Executing: movz\n");
+						if(!rt) rd = rs;
+            break;
+		case 0x26: printf("	Executing: xor\n");
+						rd = rs ^ rt;
+            break;
 		default: printf("	Invalid Command\n");
   }
 /*
@@ -124,18 +134,41 @@ void Execute::executeI(){
 						rt = rs & immediate;
 						//printf("rt = %d\n",rd);
             break;
-		case 0x4: printf("	Executing: beq\n"); 
+		case 0x4: printf("	Executing: beq\n");   //-----------------------------------------------
 						if(rs==rt){
 							printf("	Branch Taken\n");
 							pc = pc + 1 + branchAddress(immediate);
 						} 
+						printf("	Branch NOT Taken\n");
             break;
 		case 0x5: printf("	Executing: bne\n"); 
 						if(rs!=rt){
 							printf("	Branch Taken\n");
 							pc = pc + 1 + branchAddress(immediate);
 						} 
+						printf("	Branch NOT Taken\n");
             break;
+		case 0x7: printf("	Executing: bgtz\n"); 
+						if(rs>0){
+							printf("	Branch Taken\n");
+							pc = pc + 1 + immediate;
+						} 
+						printf("	Branch NOT Taken\n");
+            break;
+		case 0x6: printf("	Executing: blez\n"); 
+						if(rs<=0){
+							printf("	Branch Taken\n");
+							pc = pc + 1 + immediate;
+						} 
+						printf("	Branch NOT Taken\n");
+            break;
+		case 0x1: printf("	Executing: bltz\n"); 
+						if(rs<0){
+							printf("	Branch Taken\n");
+							pc = pc + 1 + immediate;
+						} 
+						printf("	Branch NOT Taken\n");
+            break;                            //------------------------------------------------
 		case 0x24: printf("	Executing: lbu\n"); 
 						//uh oh
             break;
@@ -177,6 +210,9 @@ void Execute::executeI(){
 		case 0x2b: printf("	Executing: sw\n"); 
 						//uh oh
             break;
+		case 0xe: printf(" Executing: xori");
+						rt = rs ^ immediate;
+						break;
 		default: printf("	Invalid Command\n");
   }
 /*
@@ -213,4 +249,9 @@ void Execute::executeJ(){
 	printf("ra = %X\n",ra);
 	printf("Jump Adress = %X\n",jumpAddress);
 	*/
+}
+
+void Execute::special(){
+	if(rt & 0b10000000) rd = 0b11111111111111111111111111111111;
+	else if(!(rt & 0b10000000)) rd = 0b00000000000000000000000011111111;
 }

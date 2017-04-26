@@ -8,6 +8,7 @@ class Decode{
         void decodeI();
         void decodeJ();
 				void setOP();
+				void special();
 } id; 
 
 void Decode::setOP(){
@@ -50,4 +51,9 @@ void Decode::decodeJ(){
 						break;
 		default: printf("	Invalid Command\n");
   }   
+}
+
+void Decode::special(){
+  rt = ((input >> 16) & 0b00000000000000000000000000011111);
+  rd = ((input >> 11) & 0b00000000000000000000000000011111);
 }
