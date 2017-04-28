@@ -90,21 +90,6 @@ void Execute::executeR(){ //function to check for specific r-type command and ex
 */
 }
 
-int branchAddress(int i){
-	int branchAddress = 0;
-	int signExtendBit = 0b1000000000000000 & i;
-	if(signExtendBit){
-		branchAddress = i << 2;
-		branchAddress = branchAddress | 0b11111111111111000000000000000000;
-	}
-	else if(!signExtendBit){
-		branchAddress = i << 2;
-		//i think the computer keeps numbers 0 filled
-		//so if the sign extend bit is 0, just leave the stuff how it is
-	}
-	return branchAddress;
-}
-
 int signExtend(int i){
 	int signExtendBit = 0b1000000000000000 & i;
 	if(signExtendBit){
@@ -135,39 +120,39 @@ void Execute::executeI(){
 						//printf("rt = %d\n",rd);
             break;
 		case 0x4: printf("	Executing: beq\n");   //-----------------------------------------------
-						if(rs==rt){
-							printf("	Branch Taken\n");
-							pc = pc + 1 + branchAddress(immediate);
-						} 
-						printf("	Branch NOT Taken\n");
+// 						if(rs==rt){
+// 							printf("	Branch Taken\n");
+// 							pc = pc + 1 + branchAddress(immediate);
+// 						} 
+// 						else printf("	Branch NOT Taken\n");
             break;
 		case 0x5: printf("	Executing: bne\n"); 
-						if(rs!=rt){
-							printf("	Branch Taken\n");
-							pc = pc + 1 + branchAddress(immediate);
-						} 
-						printf("	Branch NOT Taken\n");
+// 						if(rs!=rt){
+// 							printf("	Branch Taken\n");
+// 							pc = pc + 1 + branchAddress(immediate);
+// 						} 
+// 						else printf("	Branch NOT Taken\n");
             break;
 		case 0x7: printf("	Executing: bgtz\n"); 
-						if(rs>0){
-							printf("	Branch Taken\n");
-							pc = pc + 1 + immediate;
-						} 
-						printf("	Branch NOT Taken\n");
+// 						if(rs>0){
+// 							printf("	Branch Taken\n");
+// 							pc = pc + 1 + immediate;
+// 						} 
+// 						else printf("	Branch NOT Taken\n");
             break;
 		case 0x6: printf("	Executing: blez\n"); 
-						if(rs<=0){
-							printf("	Branch Taken\n");
-							pc = pc + 1 + immediate;
-						} 
-						printf("	Branch NOT Taken\n");
+// 						if(rs<=0){
+// 							printf("	Branch Taken\n");
+// 							pc = pc + 1 + immediate;
+// 						} 
+// 						else printf("	Branch NOT Taken\n");
             break;
 		case 0x1: printf("	Executing: bltz\n"); 
-						if(rs<0){
-							printf("	Branch Taken\n");
-							pc = pc + 1 + immediate;
-						} 
-						printf("	Branch NOT Taken\n");
+// 						if(rs<0){
+// 							printf("	Branch Taken\n");
+// 							pc = pc + 1 + immediate;
+// 						} 
+// 						else printf("	Branch NOT Taken\n");
             break;                            //------------------------------------------------
 		case 0x24: printf("	Executing: lbu\n"); 
 						//uh oh

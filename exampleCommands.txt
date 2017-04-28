@@ -1,0 +1,11 @@
+//to compile on lucas machine: g++ -mcmodel=medium -Wall -Wextra -o output main.cpp
+
+//example inputs/////////////////////////////////////////
+//id.input = 0x014B4820; //R-Type: ADD $t1 $t2 $t3
+//id.input = 0x21280007; //I-Type: addi t0 t1 0x0007
+//id.input = 0x3008FFFF; //I-Type: andi $t0,$zero,0xFFFF
+//id.input = 0x08000004; //J-Type: j 0x0004
+//id.input = 0x3008FFFF;
+//id.input = 0x8d090000; //I-Type: lw $t1, 0($t0)
+//id.input = 0xad090000; //I-Type: sw $t1, 0($t0)
+/////////////////////////////////////////////////////////
