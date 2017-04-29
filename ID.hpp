@@ -1,10 +1,9 @@
 #include <stdio.h>
 
 class Decode{
-    //int pc, opcode,rs,rt,rd,ra, shamt, funct, immediate,address, jumpAddress, input;
     public:
         int pc, opcode,rs,rt,rd,ra, shamt, funct, immediate,address, jumpAddress, input;
-        void decodeR();
+				void decodeR();
         void decodeI();
         void decodeJ();
 				void setOP();
@@ -20,15 +19,12 @@ int branchAddress(int i){
 	}
 	else if(!signExtendBit){
 		branchAddress = i << 2;
-		//i think the computer keeps numbers 0 filled
-		//so if the sign extend bit is 0, just leave the stuff how it is
 	}
 	return branchAddress;
 }
 
 void Decode::setOP(){
 	 opcode = (input >> 26) & (0b00000000000000000000000000111111);
-	 //printf("	Opcode: 0x%x\n",opcode);
 }
 
 void Decode::decodeR(){
@@ -93,6 +89,7 @@ void Decode::decodeJ(){
 	
 	pc += 1;
 	jumpAddress = (pc & 0b11110000000000000000000000000000)|(address << 2);
+	printf("Jump Address = %d\n",jumpAddress);
 	
 	switch(opcode){
 		case 0x2: printf("\nExecuting: Jump\n");
@@ -102,7 +99,7 @@ void Decode::decodeJ(){
             ra = pc + 2;
 						pc = jumpAddress;
 						break;
-		default: printf("	Invalid Command\n");
+		default: printf("Invalid Command\n");
   }   
 }
 

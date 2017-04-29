@@ -28,8 +28,8 @@ void Fetch::fill(){
 		} 
 		instruction[instructionIndex] = -1;
 	
-	int k=1;
-	for(k=1; k<200;k++) printf("%d 0x%x || ",k,instruction[k]);
+// 	int k=1;
+// 	for(k=1; k<200;k++) printf("%d 0x%x || ",k,instruction[k]);
 	
 		sp = instruction[0];
 		fp = instruction[1];
