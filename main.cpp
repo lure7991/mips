@@ -108,6 +108,7 @@ Fetch IF;
               id.decodeI();
               rs = id.rs;
               rt = id.rt;
+							printf("rt value here = %d\n",rt);
 							pc = id.pc;
               immediate = id.immediate;
 	
@@ -162,9 +163,11 @@ Fetch IF;
 	mem.shamt = shamt;
 	mem.function = funct;
 	mem.pc = pc;
-								
+
 	mem.doMem();
-								
+
+	if(mem.check) reg[mem.rt] = mem.temp;
+
 	reg[rt] = mem.rt;
 
 //Write-Back Pipeline//////////////////////////////////////////////////////////////////////////

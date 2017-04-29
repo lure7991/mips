@@ -58,7 +58,7 @@ void Execute::executeR(){
 		case 0x26: printf("Executing: xor\n");
 						rd = rs ^ rt;
             break;
-		default: printf("Invalid Command\n");
+		default: printf("Invalid R Command\n");
   }
 }
 
@@ -124,7 +124,7 @@ void Execute::executeI(){
 		case 0xe: printf("Executing: xori");
 						rt = rs ^ immediate;
 						break;
-		default: printf("Invalid Command\n");
+		default: printf("Invalid I Command\n");
   }
 }
 
