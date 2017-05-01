@@ -138,7 +138,7 @@
 0x00000000,   // 	nop
 0x00000000,   // 	nop
 0x00000000,   // 	nop
-0x27bdf7f8,   // 	addiu	sp,sp,-2056
+0x27bdf7f8,   // 	addiu	sp,sp,-2056       //////////////////////////////start
 0xafbf0804,   // 	sw	ra,2052(sp)
 0xafb30800,   // 	sw	s3,2048(sp)
 0xafb207fc,   // 	sw	s2,2044(sp)

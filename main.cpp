@@ -14,7 +14,6 @@ using namespace std;
 
 int cycleCount = 0;
 
-//int reg[32] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31}; //need code to put ID answers into their regs
 int reg[32];
 
 int instruction[500];
@@ -34,6 +33,22 @@ int funct;
 int address;
 int immediate;
 
+void printReg(){
+	printf("Reg values after pipeline: \n");
+	int i;
+	for(i=0; i<32; i++){
+		printf("	Reg #%d = %d\n",i,reg[i]);
+	}
+}
+
+void printMem(){
+	printf("Mem values after pipeline: \n");
+	int i;
+	for(i=0; i<1200; i++){
+		printf("Mem #%d = %d	",i,mem.memory[i]);
+	}
+}
+
 int main(){
 
 //Instruction Fetch Pipeline//////////////////////////////////////////////////////////////
@@ -42,7 +57,7 @@ Fetch IF;
 	
 	IF.fill();
 	
-	instructionIndex = IF.instructionIndex;
+	//instructionIndex = IF.instructionIndex;
 	
 	reg[sp] = IF.sp;
 	reg[fp] = IF.fp;
@@ -52,14 +67,14 @@ Fetch IF;
 	printf("	fp = 0x%x\n",reg[fp]);
 	printf("	pc = %d\n",pc);
 	
-	int answer = 1;
-	
+							int answer = 1;
 							pc--;
 							while(answer){
+							//while(pc){
 										//printf("\nInstruction Fetch:\n\n");
 										pc++;
 										printf("\nInstruction: 0x%x\n",IF.instruction[pc]);
-										printf("pc = %d",pc+1);
+										printf("pc = %d\n",pc+1);
 
 //Decode Pipeline//////////////////////////////////////////////////////////////////////////
 	//printf("\nDecode:\n\n");
@@ -99,6 +114,17 @@ Fetch IF;
               printf("	 ra = 0x%x\n",reg[ra]);
               printf("	 Address = 0x%x\n",address);    
               break;
+		case 0x3: 
+              id.decodeJ();
+              pc = id.pc;
+              reg[ra] = id.ra;
+              address = id.address;
+	
+              printf("\nRecieved J-Type: \n");        
+              printf("	 pc = %d\n",pc+1);
+              printf("	 ra = 0x%x\n",reg[ra]);
+              printf("	 Address = 0x%x\n",address);    
+              break;
 		case 0x1f:
 							id.special();
 							rd = id.rd;
@@ -108,7 +134,6 @@ Fetch IF;
               id.decodeI();
               rs = id.rs;
               rt = id.rt;
-							printf("rt value here = %d\n",rt);
 							pc = id.pc;
               immediate = id.immediate;
 	
@@ -166,31 +191,28 @@ Fetch IF;
 
 	mem.doMem();
 
-	if(mem.check) reg[mem.rt] = mem.temp;
-
-	reg[rt] = mem.rt;
+	if(mem.load) reg[mem.rt] = mem.temp;
+	else if (!mem.load) reg[rt] = mem.rt;
 
 //Write-Back Pipeline//////////////////////////////////////////////////////////////////////////
 	
-	printf("Reg values after pipeline: \n");
-	int i;
-	for(i=0; i<32; i++){
-		printf("	Reg #%d = %d\n",i,reg[i]);
-	}
+	printReg();
 	
 ////////////////////////////////////END OF PIPELINE/////////////////////////////////////////////////////////////
 	cycleCount++;
-	printf("pc = %d\n",pc+1);
 	printf("Current Cycle Count = %d\n",cycleCount);
-	
+	printf("pc = %d\n",pc+1);
 				printf("Would you like to run another instruction? (1/0) --> ");
 				scanf("%d", &answer);
 				if(!answer){
 					printf("Final Cycle Count = %d\n",cycleCount);
-					return(0);
+					//return(0);
 				}
-	}
+ 	}
+	
+	printMem();
 	printf("Final Cycle Count = %d\n",cycleCount);
+	printReg();
 	
   return(0);
 }

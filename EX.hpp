@@ -77,7 +77,6 @@ void Execute::executeI(){
             break;
 		case 0x9: printf("Executing: addiu\n"); 
 						rt = rs + immediate;
-						printf("pc = %d\n",pc+1);
             break;
 		case 0xc: printf("Executing: andi\n"); 
 						rt = rs & immediate;

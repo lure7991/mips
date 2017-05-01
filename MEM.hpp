@@ -6,17 +6,16 @@ class Memory{
 	public:
 			int opcode, function, shamt, immediate, address; 
 			int jumpAddress, pc, ra, rd, rt, rs, temp, index;
-			bool check;
+			bool load;
 			int memory[1200];
 			void doMem();
 } mem;
 
 void Memory::doMem(){
-	check = false;
+	load = false;
 	switch(opcode){
 		case 0x28: printf("	Executing: sb\n");
 							rt = rt & 0b00000000000000000000000011111111;
-							
 							index = (rt + immediate) % 4;
 							rs = floor((rs + immediate)/4);
 							switch(index){
@@ -49,7 +48,6 @@ void Memory::doMem(){
 							break;
 		case 0x29: printf("	Executing: sh\n"); 
 							rt = rt & 0b00000000000000001111111111111111;
-							
 							index = (rt + immediate) % 4;
 							rs = floor((rs + immediate)/4);
 							switch(index){
@@ -75,7 +73,7 @@ void Memory::doMem(){
 							printf("%d --> m[%d]\n",rt,rs+immediate);
 							break;
 		case 0x24: printf("	Executing: lbu\n"); 
-							check = true;
+							load = true;
 							switch(immediate){
 								case 0: 
 									temp = ((memory[rs/4] & 0xFF000000) >> 6);
@@ -94,7 +92,7 @@ void Memory::doMem(){
 							printf("Reg #%d <-- m[%d]\n", rt, temp);
 							break;
 			case 0x25: printf("	Executing: lhu\n"); 
-							check = true;
+							load = true;
 							switch(immediate){
 								case 0: 
 									temp = ((memory[rs/4] & 0xFFFF0000) >> 4);
@@ -107,10 +105,12 @@ void Memory::doMem(){
 							printf("Reg #%d <-- m[%d]\n", rt, temp);
 							break;
 			case 0xf: printf("	Executing: lui\n"); 
+							load = true;
 							rt = immediate & 0b11111111111111110000000000000000;
 							printf("m[%d] --> reg #%d \n",rs+immediate,rt);
 							break;
 			case 0x23: printf("	Executing: lw\n"); 
+							load = true;
 							rt = memory[(rs+immediate)/4];
 							printf("m[%d] --> reg #%d \n",rs+immediate,rt);
 							break;

@@ -20,6 +20,7 @@ int branchAddress(int i){
 	else if(!signExtendBit){
 		branchAddress = i << 2;
 	}
+	//printf("branchAddress+pc+1 = %d\n", branchAddress);
 	return branchAddress;
 }
 
@@ -49,14 +50,16 @@ void Decode::decodeI(){
 		case 0x4: printf("	Executing: beq\n");   
 							if(rs==rt){
 								printf("	Branch Taken\n");
-								pc = pc + 1 + branchAddress(immediate);
+								//pc = pc + 1 + branchAddress(immediate);
+								pc = pc + 1 + immediate;
 							} 
 							else printf("	Branch NOT Taken\n");
 							break;
 			case 0x5: printf("	Executing: bne\n"); 
 							if(rs!=rt){
 								printf("	Branch Taken\n");
-								pc = pc + 1 + branchAddress(immediate);
+								//pc = pc + 1 + branchAddress(immediate);
+								pc = pc + 1 + immediate;
 							} 
 							else printf("	Branch NOT Taken\n");
 							break;
@@ -92,10 +95,10 @@ void Decode::decodeJ(){
 	printf("Jump Address = %d\n",jumpAddress);
 	
 	switch(opcode){
-		case 0x2: printf("\nExecuting: Jump\n");
+		case 0x2: //printf("\nExecuting: Jump\n");
 						pc = jumpAddress;
             break;
-		case 0x3: printf("Executing: Jump and Link\n"); 
+		case 0x3: //printf("Executing: Jump and Link\n"); 
             ra = pc + 2;
 						pc = jumpAddress;
 						break;
