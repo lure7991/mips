@@ -9,7 +9,7 @@
 #include "ID.hpp"
 #include "EX.hpp"
 #include "MEM.hpp"
-//#include "iCache.hpp"
+#include "iCache.hpp"
 
 using namespace std;
 
@@ -38,16 +38,16 @@ void printReg(){
 	printf("Reg values after pipeline: \n");
 	int i;
 	for(i=0; i<32; i++){
-	printf("	Reg #%d = %d\n",i,reg[i]);
-}
+		printf("	Reg #%d = %d\n",i,reg[i]);
+	}
 }
 
 void printMem(){
 	printf("Mem values after pipeline: \n");
 	int i;
 	for(i=0; i<1200; i++){
-	printf("Mem #%d = %d	",i,mem.memory[i]);
-}
+		printf("Mem #%d = %d	",i,mem.memory[i]);
+	}
 }
 
 int main(){
@@ -145,7 +145,7 @@ int main(){
 				printf("	 Rt = %d\n",reg[rt]);
 				printf("	 Immediate = %d\n",immediate);
 				break;
-	}
+		}
 
 //Execute Pipeline//////////////////////////////////////////////////////////////////////////
 //printf("Execute:\n\n");
@@ -212,21 +212,19 @@ int main(){
 	
 	// printf("pc = %d\n",pc+1);
 	
-<<<<<<< HEAD
+
 	// printf("Would you like to run another instruction? (1/0) --> ");
 	// scanf("%d", &answer);
 	// if(!answer){
 	// 	printf("Final Cycle Count = %d\n",cycleCount);
 	// 	//return(0);
 	// }
-=======
 // 	printf("Would you like to run another instruction? (1/0) --> ");
 // 	scanf("%d", &answer);
 // 	if(!answer){
 // 		printf("Final Cycle Count = %d\n",cycleCount);
 // 		//return(0);
 // 	}
->>>>>>> d0a4b5a630f038b3a5739425b5db1b906990d1bd
 	}
 
 	printMem();
@@ -235,8 +233,7 @@ int main(){
 	
 	
 // //**** Start cache bullshit ****////
-// 	iCache newCache; 
-// 	newCache.cacheSize= 128;
+	iCache newCache; 
 // 	// newCache.address= 0b11100011100011100011100011100011
 // 	// newCache.address= 0b00000000000000000000000000000110;
 // 	//index= 101010101010
@@ -245,8 +242,8 @@ int main(){
 // 	// int addressArray[2]= {0b11100000000000001010101010101010, 0b00000000000000000000000000000110};
 // 	// int temp_PC= 0b11100011100011100011100011100010;
 	 
-<<<<<<< HEAD
 	int testAddress= pc;
+	int tempPC=0;
 	for(int i=0; i<32 ; i++){
 		newCache.address[i]= (testAddress>>i)&1;	//Eventually change testAddress to PC value
 	} 
@@ -254,7 +251,6 @@ int main(){
 	//*** Begin the cache simulation ** ///
 	//*** IF checks iCache for instruction using PC val ***//
 	//*** If there's a miss, the cache goes to memory[PC] and writes instruction to cache ***//
-	cout<<"Testing with PC val of 0x16"<<endl;
 	newCache.PC= pc; 
 	newCache.parcePC();
 
@@ -263,31 +259,32 @@ int main(){
 	int i=2;
 	while(i>0){
 		//run twice for testing purposes
-	if (newCache.access()){
-		cout<<"cacheHit!"<<endl;
-		cout<<"Data= "<< newCache.data<<endl; 
-	}
-	else{
-		//cache miss
-		cout<<"Cache Miss! Accessing main memory"<<endl;
-
-		//if cache miss, fill blocks with blocksize amount of memory lines
-
-		tempPC= pc; //Change temp_PC to PC later
-		tempPC= pc-offset;
-		if (offset!=0){
-			cycleCount= cycleCount+6;
+		if (newCache.access()){
+			cout<<"cacheHit!"<<endl;
+			cout<<"Data= "<< newCache.data<<endl; 
 		}
-		//Filling cache
-		for(int j= 0; j<newCache.blockSize; j++){
-			newCache.idata[newCache.index][newCache.offset]= instruction[tempPC+j];
-			cycleCount= cycleCount+2; 
+		else{
+			//cache miss
+			cout<<"Cache Miss! Accessing main memory"<<endl;
+
+			//if cache miss, fill blocks with blocksize amount of memory lines
+
+			tempPC= pc; //Change temp_PC to PC later
+			tempPC= pc-newCache.offset;
+			if (newCache.offset!=0){
+				cycleCount= cycleCount+6;
+			}
+			//Filling cache
+			for(int j= 0; j<newCache.blockSize; j++){
+				newCache.idata[newCache.index][newCache.offset]= instruction[tempPC+j];
+				cycleCount= cycleCount+2; 
+			}
+				
+			cout<<"cache misses= "<<newCache.numMisses<<endl;
+			cout<<"cache hits= "<< newCache.numHits<<endl;
 		}
-			
-		cout<<"cache misses= "<<newCache.numMisses<<endl;
-		cout<<"cache hits= "<< newCache.numHits<<endl;
+		i--;
 	}
-	i--;
 
 	return(0);
 
