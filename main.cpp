@@ -9,7 +9,7 @@
 #include "ID.hpp"
 #include "EX.hpp"
 #include "MEM.hpp"
-#include "iCache.hpp"
+//#include "iCache.hpp"
 
 using namespace std;
 
@@ -212,12 +212,21 @@ int main(){
 	
 	// printf("pc = %d\n",pc+1);
 	
+<<<<<<< HEAD
 	// printf("Would you like to run another instruction? (1/0) --> ");
 	// scanf("%d", &answer);
 	// if(!answer){
 	// 	printf("Final Cycle Count = %d\n",cycleCount);
 	// 	//return(0);
 	// }
+=======
+// 	printf("Would you like to run another instruction? (1/0) --> ");
+// 	scanf("%d", &answer);
+// 	if(!answer){
+// 		printf("Final Cycle Count = %d\n",cycleCount);
+// 		//return(0);
+// 	}
+>>>>>>> d0a4b5a630f038b3a5739425b5db1b906990d1bd
 	}
 
 	printMem();
@@ -225,17 +234,18 @@ int main(){
 	printReg();
 	
 	
-//**** Start cache bullshit ****////
-	iCache newCache; 
-	newCache.cacheSize= 128;
-	// newCache.address= 0b11100011100011100011100011100011
-	// newCache.address= 0b00000000000000000000000000000110;
-	//index= 101010101010
-	//tag= 11100000000000001010
+// //**** Start cache bullshit ****////
+// 	iCache newCache; 
+// 	newCache.cacheSize= 128;
+// 	// newCache.address= 0b11100011100011100011100011100011
+// 	// newCache.address= 0b00000000000000000000000000000110;
+// 	//index= 101010101010
+// 	//tag= 11100000000000001010
 
-	// int addressArray[2]= {0b11100000000000001010101010101010, 0b00000000000000000000000000000110};
-	// int temp_PC= 0b11100011100011100011100011100010;
+// 	// int addressArray[2]= {0b11100000000000001010101010101010, 0b00000000000000000000000000000110};
+// 	// int temp_PC= 0b11100011100011100011100011100010;
 	 
+<<<<<<< HEAD
 	int testAddress= pc;
 	for(int i=0; i<32 ; i++){
 		newCache.address[i]= (testAddress>>i)&1;	//Eventually change testAddress to PC value
@@ -278,6 +288,51 @@ int main(){
 		cout<<"cache hits= "<< newCache.numHits<<endl;
 	}
 	i--;
+=======
+// 	int testAddress= pc;
+// 	for(int i=0; i<32 ; i++){
+// 		newCache.address[i]= (testAddress>>i)&1;	//Eventually change testAddress to PC value
+// 	} 
+
+// 	//*** Begin the cache simulation ** ///
+// 	//*** IF checks iCache for instruction using PC val ***//
+// 	//*** If there's a miss, the cache goes to memory[PC] and writes instruction to cache ***//
+// 	cout<<"Testing with PC val of 0x16"<<endl;
+// 	newCache.PC= pc; 
+// 	newCache.parcePC();
+
+// 	// newCache.idata[newCache.index][newCache.] 
+// 	// newCache.iCache();
+// 	int i=2;
+// 	while(i>0){
+// 		//run twice for testing purposes
+// 	if (newCache.access()){
+// 		cout<<"cacheHit!"<<endl;
+// 		cout<<"Data= "<< newCache.data<<endl; 
+// 	}
+// 	else{
+// 		//cache miss
+// 		cout<<"Cache Miss! Accessing main memory"<<endl;
+// 		//if cache miss, fill blocks with blocksize amount of memory lines
+
+// 		tempPC= pc; //Change temp_PC to PC later
+// 		tempPC= temp_PC-offset;
+// 		// for(int j= 0; j<newCache.blockSize; j++){
+// 		// 	// newCache.idata[newCache.index][]= memory[PC];
+// 		for(int j= 0; j<newCache.blockSize; j++){
+// 			//instruction[PC]
+// 			newCache.idata[newCache.index][newCache.offset]= memory[tempPC+j];
+// 			newCache.cacheValid[newCache.index]= true;
+// 		}
+			
+
+// 		// }
+// 		// newCache.idata[newCache.index][newCache.blocksize]= memory[PC]
+// 		cout<<"cache misses= "<<newCache.numMisses<<endl;
+// 		cout<<"cache hits= "<< newCache.numHits<<endl;
+// 	}
+// 	i--;
+>>>>>>> d0a4b5a630f038b3a5739425b5db1b906990d1bd
 
 	return(0);
 
