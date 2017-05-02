@@ -68,10 +68,10 @@ int main(){
 	printf("	fp = 0x%x\n",reg[fp]);
 	printf("	pc = %d\n",pc);
 
-	int answer = 1;
+	//int answer = 1;
 	pc--;
-	while(answer){
-		//while(pc){
+	//while(answer){
+	while(pc){
 		//printf("\nInstruction Fetch:\n\n");
 		pc++;
 		printf("\nInstruction: 0x%x\n",IF.instruction[pc]);
@@ -208,16 +208,16 @@ int main(){
 ////////////////////////////////////END OF PIPELINE/////////////////////////////////////////////////////////////
 	cycleCount++;
 	
-	printf("Current Cycle Count = %d\n",cycleCount);
+	// printf("Current Cycle Count = %d\n",cycleCount);
 	
-	printf("pc = %d\n",pc+1);
+	// printf("pc = %d\n",pc+1);
 	
-	printf("Would you like to run another instruction? (1/0) --> ");
-	scanf("%d", &answer);
-	if(!answer){
-		printf("Final Cycle Count = %d\n",cycleCount);
-		//return(0);
-	}
+	// printf("Would you like to run another instruction? (1/0) --> ");
+	// scanf("%d", &answer);
+	// if(!answer){
+	// 	printf("Final Cycle Count = %d\n",cycleCount);
+	// 	//return(0);
+	// }
 	}
 
 	printMem();
@@ -260,21 +260,20 @@ int main(){
 	else{
 		//cache miss
 		cout<<"Cache Miss! Accessing main memory"<<endl;
+
 		//if cache miss, fill blocks with blocksize amount of memory lines
 
 		tempPC= pc; //Change temp_PC to PC later
-		tempPC= temp_PC-offset;
-		// for(int j= 0; j<newCache.blockSize; j++){
-		// 	// newCache.idata[newCache.index][]= memory[PC];
+		tempPC= pc-offset;
+		if (offset!=0){
+			cycleCount= cycleCount+6;
+		}
+		//Filling cache
 		for(int j= 0; j<newCache.blockSize; j++){
-			//instruction[PC]
-			newCache.idata[newCache.index][newCache.offset]= memory[tempPC+j];
-			newCache.cacheValid[newCache.index]= true;
+			newCache.idata[newCache.index][newCache.offset]= instruction[tempPC+j];
+			cycleCount= cycleCount+2; 
 		}
 			
-
-		// }
-		// newCache.idata[newCache.index][newCache.blocksize]= memory[PC]
 		cout<<"cache misses= "<<newCache.numMisses<<endl;
 		cout<<"cache hits= "<< newCache.numHits<<endl;
 	}

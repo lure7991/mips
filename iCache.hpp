@@ -134,6 +134,7 @@ void iCache::icacheInit(){
 bool iCache::access(){
 	
 	//Brandon math for miss clock cycles (6+2)*offsets
+
 	pendingMemory= offset; 
 
 	
@@ -158,10 +159,7 @@ bool iCache::access(){
 	
 	if(!fillingCache){
 		if(cacheTag[index]==tag && cacheValid[index]==true){
-			cout<<"Data should be 18"<<endl; 
-
 			data= idata[index][offset];
-
 			numHits++;
 			cacheHit=true;
 			return cacheHit;
@@ -169,8 +167,8 @@ bool iCache::access(){
 		else if((cacheTag[index]!=tag && cacheValid[index]==true) || (cacheTag[index]!=tag && cacheValid[index]==false)){
 			//cache miss
 			//access main memory
-
-			// idata[index][offset]= memory[PC];
+			cacheTag[index]= tag;
+			cacheValid[index]= true;
 			cacheHit=false;
 			numMisses++;
 			return cacheHit;
