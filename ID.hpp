@@ -47,42 +47,42 @@ void Decode::decodeI(){
   }
 	
 	switch(opcode){
-		case 0x4: printf("	Executing: beq\n");   
+		case 0x4: //printf("	Executing: beq\n");   
 							if(rs==rt){
-								printf("	Branch Taken\n");
+								//printf("	Branch Taken\n");
 								//pc = pc + 1 + branchAddress(immediate);
 								pc = pc + 1 + immediate;
 							} 
-							else printf("	Branch NOT Taken\n");
+							//else printf("	Branch NOT Taken\n");
 							break;
-			case 0x5: printf("	Executing: bne\n"); 
+			case 0x5: //printf("	Executing: bne\n"); 
 							if(rs!=rt){
-								printf("	Branch Taken\n");
+								//printf("	Branch Taken\n");
 								//pc = pc + 1 + branchAddress(immediate);
 								pc = pc + 1 + immediate;
 							} 
-							else printf("	Branch NOT Taken\n");
+							//else printf("	Branch NOT Taken\n");
 							break;
 			case 0x7: printf("	Executing: bgtz\n"); 
 							if(rs>0){
-								printf("	Branch Taken\n");
+								//printf("	Branch Taken\n");
 								pc = pc + 1 + immediate;
 							} 
-							else printf("	Branch NOT Taken\n");
+							//else printf("	Branch NOT Taken\n");
 							break;
-			case 0x6: printf("	Executing: blez\n"); 
+			case 0x6: //printf("	Executing: blez\n"); 
 							if(rs<=0){
-								printf("	Branch Taken\n");
+								//printf("	Branch Taken\n");
 								pc = pc + 1 + immediate;
 							} 
-							else printf("	Branch NOT Taken\n");
+							//else printf("	Branch NOT Taken\n");
 							break;
-			case 0x1: printf("	Executing: bltz\n"); 
+			case 0x1: //printf("	Executing: bltz\n"); 
 							if(rs<0){
-								printf("	Branch Taken\n");
+								//printf("	Branch Taken\n");
 								pc = pc + 1 + immediate;
 							} 
-							else printf("	Branch NOT Taken\n");
+							//else printf("	Branch NOT Taken\n");
 							break;                            
 	}
 }
@@ -92,7 +92,7 @@ void Decode::decodeJ(){
 	
 	pc += 1;
 	jumpAddress = (pc & 0b11110000000000000000000000000000)|(address << 2);
-	printf("Jump Address = %d\n",jumpAddress);
+	//printf("Jump Address = %d\n",jumpAddress);
 	
 	switch(opcode){
 		case 0x2: //printf("\nExecuting: Jump\n");
@@ -102,7 +102,7 @@ void Decode::decodeJ(){
             ra = pc + 2;
 						pc = jumpAddress;
 						break;
-		default: printf("Invalid Command\n");
+		//default: printf("Invalid Command\n");
   }   
 }
 

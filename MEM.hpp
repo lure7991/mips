@@ -14,7 +14,7 @@ class Memory{
 void Memory::doMem(){
 	load = false;
 	switch(opcode){
-		case 0x28: printf("	Executing: sb\n");
+		case 0x28: //printf("	Executing: sb\n");
 							rt = rt & 0b00000000000000000000000011111111;
 							index = (rt + immediate) % 4;
 							rs = floor((rs + immediate)/4);
@@ -44,9 +44,9 @@ void Memory::doMem(){
 									memory[rs] = temp;
 									break;
 							}
-							printf("%d --> m[%d]\n",rt,memory[rs]);
+							//printf("%d --> m[%d]\n",rt,memory[rs]);
 							break;
-		case 0x29: printf("	Executing: sh\n"); 
+		case 0x29: //printf("	Executing: sh\n"); 
 							rt = rt & 0b00000000000000001111111111111111;
 							index = (rt + immediate) % 4;
 							rs = floor((rs + immediate)/4);
@@ -64,15 +64,15 @@ void Memory::doMem(){
 									memory[rs] = temp;
 									break;
 							}
-							printf("%d --> m[%d]\n",rt,memory[rs]);
+							//printf("%d --> m[%d]\n",rt,memory[rs]);
 							break;
-		case 0x2b: printf("	Executing: sw\n"); 
+		case 0x2b: //printf("	Executing: sw\n"); 
 							index = (rt + immediate) % 4;
 							rs = floor((rs + immediate)/4);
 							memory[rs+immediate] = rt;
-							printf("%d --> m[%d]\n",rt,rs+immediate);
+							//printf("%d --> m[%d]\n",rt,rs+immediate);
 							break;
-		case 0x24: printf("	Executing: lbu\n"); 
+		case 0x24: //printf("	Executing: lbu\n"); 
 							load = true;
 							switch(immediate){
 								case 0: 
@@ -87,11 +87,11 @@ void Memory::doMem(){
 								case 3:
 									temp = (memory[rs/4] & 0x000000FF);
 									break;
-								default: printf("load offset problem\n");
+								//default: printf("load offset problem\n");
 							}
-							printf("Reg #%d <-- m[%d]\n", rt, temp);
+							//printf("Reg #%d <-- m[%d]\n", rt, temp);
 							break;
-			case 0x25: printf("	Executing: lhu\n"); 
+			case 0x25: //printf("	Executing: lhu\n"); 
 							load = true;
 							switch(immediate){
 								case 0: 
@@ -100,19 +100,19 @@ void Memory::doMem(){
 								case 1:
 									temp = (memory[rs/4] & 0x0000FFFF);
 									break;
-								default: printf("load offset problem\n");
+								//default: printf("load offset problem\n");
 							}
-							printf("Reg #%d <-- m[%d]\n", rt, temp);
+							//printf("Reg #%d <-- m[%d]\n", rt, temp);
 							break;
-			case 0xf: printf("	Executing: lui\n"); 
+			case 0xf: //printf("	Executing: lui\n"); 
 							load = true;
 							rt = immediate & 0b11111111111111110000000000000000;
-							printf("m[%d] --> reg #%d \n",rs+immediate,rt);
+							//printf("m[%d] --> reg #%d \n",rs+immediate,rt);
 							break;
-			case 0x23: printf("	Executing: lw\n"); 
+			case 0x23: //printf("	Executing: lw\n"); 
 							load = true;
 							rt = memory[(rs+immediate)/4];
-							printf("m[%d] --> reg #%d \n",rs+immediate,rt);
+							//printf("m[%d] --> reg #%d \n",rs+immediate,rt);
 							break;
 	}
 }
