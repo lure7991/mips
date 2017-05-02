@@ -11,6 +11,9 @@
 #include "MEM.hpp"
 #include "iCache.hpp"
 
+#define EARLY_START true; //Turn on/off early start
+#define	ICACHE_ON	true; //Turn on/off iCache
+
 using namespace std;
 
 int cycleCount = 0;
@@ -43,7 +46,7 @@ void printReg(){
 }
 
 void printMem(){
-	printf("Mem values after pipeline: \n");
+	// printf("Mem values after pipeline: \n");
 	int i;
 	for(i=0; i<1200; i++){
 		printf("Mem #%d = %d	",i,mem.memory[i]);
@@ -70,12 +73,14 @@ int main(){
 
 	//int answer = 1;
 	pc--;
-	//while(answer){
-	while(pc){
+	int j=1000;
+	while(j>0){
+		j--;
+	// while(pc){
 		//printf("\nInstruction Fetch:\n\n");
 		pc++;
-		printf("\nInstruction: 0x%x\n",IF.instruction[pc]);
-		printf("pc = %d\n",pc+1);
+		// printf("\nInstruction: 0x%x\n",IF.instruction[pc]);
+		// printf("pc = %d\n",pc+1);
 
 
 //Decode Pipeline//////////////////////////////////////////////////////////////////////////
@@ -98,12 +103,12 @@ int main(){
 				funct = id.funct;
 				pc = id.pc;
 
-				printf("\nRecieved R-Type: \n");
-				printf("	 Rd = %d\n",reg[rd]);
-				printf("	 Rs = %d\n",reg[rs]);
-				printf("	 Rt = %d\n",reg[rt]);
-				printf("	 Shamt = %d\n",shamt);
-				printf("	 Function = 0x%x\n",funct); 
+				// printf("\nRecieved R-Type: \n");
+				// printf("	 Rd = %d\n",reg[rd]);
+				// printf("	 Rs = %d\n",reg[rs]);
+				// printf("	 Rt = %d\n",reg[rt]);
+				// printf("	 Shamt = %d\n",shamt);
+				// printf("	 Function = 0x%x\n",funct); 
 				break;
 			case 0x2: 
 				id.decodeJ();
@@ -111,10 +116,10 @@ int main(){
 				reg[ra] = id.ra;
 				address = id.address;
 
-				printf("\nRecieved J-Type: \n");        
-				printf("	 pc = %d\n",pc+1);
-				printf("	 ra = 0x%x\n",reg[ra]);
-				printf("	 Address = 0x%x\n",address);    
+				// printf("\nRecieved J-Type: \n");        
+				// printf("	 pc = %d\n",pc+1);
+				// printf("	 ra = 0x%x\n",reg[ra]);
+				// printf("	 Address = 0x%x\n",address);    
 				break;
 			case 0x3: 
 				id.decodeJ();
@@ -122,16 +127,16 @@ int main(){
 				reg[ra] = id.ra;
 				address = id.address;
 
-				printf("\nRecieved J-Type: \n");        
-				printf("	 pc = %d\n",pc+1);
-				printf("	 ra = 0x%x\n",reg[ra]);
-				printf("	 Address = 0x%x\n",address);    
+				// printf("\nRecieved J-Type: \n");        
+				// printf("	 pc = %d\n",pc+1);
+				// printf("	 ra = 0x%x\n",reg[ra]);
+				// printf("	 Address = 0x%x\n",address);    
 				break;
 			case 0x1f:
 				id.special();
 				rd = id.rd;
-				printf("\nRecieved Special Type: seb\n");
-				printf("	 Rd = %d\n",reg[rd]);	
+				// printf("\nRecieved Special Type: seb\n");
+				// printf("	 Rd = %d\n",reg[rd]);	
 			default: 
 				id.decodeI();
 				rs = id.rs;
@@ -139,11 +144,11 @@ int main(){
 				pc = id.pc;
 				immediate = id.immediate;
 
-				printf("\nRecieved I-Type: \n");
-				printf("	 pc = %d\n",pc+1);
-				printf("	 Rs = %d\n",reg[rs]);
-				printf("	 Rt = %d\n",reg[rt]);
-				printf("	 Immediate = %d\n",immediate);
+				// printf("\nRecieved I-Type: \n");
+				// printf("	 pc = %d\n",pc+1);
+				// printf("	 Rs = %d\n",reg[rs]);
+				// printf("	 Rt = %d\n",reg[rt]);
+				// printf("	 Immediate = %d\n",immediate);
 				break;
 		}
 
@@ -164,19 +169,19 @@ int main(){
 		case 0: 
 			ex.executeR();
 			reg[rd] = ex.rd;
-			printf("Rd = %d to Reg #%d\n",reg[rd], rd);
+			// printf("Rd = %d to Reg #%d\n",reg[rd], rd);
 			break;
 		case 0x2: //j-type
 			break;
 		case 0x1f: 
 			ex.special();
 			reg[rt] = ex.rt;
-			printf("Rt = %d to Reg #%d\n",reg[rt], rt);
+			// printf("Rt = %d to Reg #%d\n",reg[rt], rt);
 		default: 
 			ex.executeI();
 			pc = ex.pc;
 			reg[rt] = ex.rt;
-			printf("Rt = %d to Reg #%d\n",reg[rt], rt);
+			// printf("Rt = %d to Reg #%d\n",reg[rt], rt);
 	}
 
 //Memory Pipeline//////////////////////////////////////////////////////////////////////////
@@ -203,7 +208,7 @@ int main(){
 	
 // Write-Back Pipeline//////////////////////////////////////////////////////////////////////////
 
-	printReg();
+	// printReg();
 
 ////////////////////////////////////END OF PIPELINE/////////////////////////////////////////////////////////////
 	cycleCount++;
@@ -227,48 +232,31 @@ int main(){
 // 	}
 	}
 
-	printMem();
+	// printMem();
 	printf("Final Cycle Count = %d\n",cycleCount);
-	printReg();
+	// printReg();
 	
 	
 // //**** Start cache bullshit ****////
-	iCache newCache; 
-// 	// newCache.address= 0b11100011100011100011100011100011
-// 	// newCache.address= 0b00000000000000000000000000000110;
-// 	//index= 101010101010
-// 	//tag= 11100000000000001010
-
-// 	// int addressArray[2]= {0b11100000000000001010101010101010, 0b00000000000000000000000000000110};
-// 	// int temp_PC= 0b11100011100011100011100011100010;
-	 
+	iCache newCache;  
 	int testAddress= pc;
 	int tempPC=0;
 	for(int i=0; i<32 ; i++){
-		newCache.address[i]= (testAddress>>i)&1;	//Eventually change testAddress to PC value
+		newCache.address[i]= (testAddress>>i)&1;	//put PC values into address array 
 	} 
-
-	//*** Begin the cache simulation ** ///
-	//*** IF checks iCache for instruction using PC val ***//
-	//*** If there's a miss, the cache goes to memory[PC] and writes instruction to cache ***//
 	newCache.PC= pc; 
 	newCache.parcePC();
-
-	// newCache.idata[newCache.index][newCache.] 
-	// newCache.iCache();
 	int i=2;
 	while(i>0){
 		//run twice for testing purposes
 		if (newCache.access()){
 			cout<<"cacheHit!"<<endl;
 			cout<<"Data= "<< newCache.data<<endl; 
+			//Give information to IF.foo= blah
 		}
 		else{
 			//cache miss
 			cout<<"Cache Miss! Accessing main memory"<<endl;
-
-			//if cache miss, fill blocks with blocksize amount of memory lines
-
 			tempPC= pc; //Change temp_PC to PC later
 			tempPC= pc-newCache.offset;
 			if (newCache.offset!=0){
@@ -276,8 +264,14 @@ int main(){
 			}
 			//Filling cache
 			for(int j= 0; j<newCache.blockSize; j++){
-				newCache.idata[newCache.index][newCache.offset]= instruction[tempPC+j];
+				cout<<"PC= "<< tempPC+j <<endl;
+				printf("%x\n",IF.instruction[tempPC+j]);
+				newCache.idata[newCache.index][newCache.offset]= IF.instruction[tempPC+j];
 				cycleCount= cycleCount+2; 
+				// if(tempPC+j==pc && EARLY_START){
+				// 	//Early start, give IF information as soon as possible
+
+				// }
 			}
 				
 			cout<<"cache misses= "<<newCache.numMisses<<endl;
