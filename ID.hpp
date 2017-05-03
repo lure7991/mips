@@ -3,6 +3,7 @@
 class Decode{
     public:
         int pc, opcode,rs,rt,rd,ra, shamt, funct, immediate,address, jumpAddress, input;
+				bool bj;
 				void decodeR();
         void decodeI();
         void decodeJ();
@@ -63,7 +64,7 @@ void Decode::decodeI(){
 							} 
 							//else printf("	Branch NOT Taken\n");
 							break;
-			case 0x7: printf("	Executing: bgtz\n"); 
+			case 0x7: //printf("	Executing: bgtz\n"); 
 							if(rs>0){
 								//printf("	Branch Taken\n");
 								pc = pc + 1 + immediate;
@@ -91,7 +92,8 @@ void Decode::decodeJ(){
   address = (input & 0b00000011111111111111111111111111);
 	
 	pc += 1;
-	jumpAddress = (pc & 0b11110000000000000000000000000000)|(address << 2);
+	jumpAddress = (pc & 0b11110000000000000000000000000000)|(0b00000001111111111111111111111111 & address);
+	//jumpAddress = jumpAddress << 2;
 	//printf("Jump Address = %d\n",jumpAddress);
 	
 	switch(opcode){
@@ -99,7 +101,7 @@ void Decode::decodeJ(){
 						pc = jumpAddress;
             break;
 		case 0x3: //printf("Executing: Jump and Link\n"); 
-            ra = pc + 2;
+						ra = pc + 2;
 						pc = jumpAddress;
 						break;
 		//default: printf("Invalid Command\n");

@@ -9,16 +9,16 @@
 #include "ID.hpp"
 #include "EX.hpp"
 #include "MEM.hpp"
-#include "iCache.hpp"
+//#include "iCache.hpp"
 
-#define EARLY_START true; //Turn on/off early start
-#define	ICACHE_ON	true; //Turn on/off iCache
+//#define EARLY_START true; //Turn on/off early start
+//#define	ICACHE_ON	true; //Turn on/off iCache
 
 using namespace std;
 
 int cycleCount = 0;
 
-int reg[32];
+int reg[32] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 int instruction[500];
 int instructionIndex = 0;
@@ -27,6 +27,9 @@ int pc;
 int sp = 29;
 int fp = 30;
 int ra = 31;
+
+int bjPC;
+bool bj = false;
 
 int opcode;
 int rd;
@@ -38,7 +41,7 @@ int address;
 int immediate;
 
 void printReg(){
-	printf("Reg values after pipeline: \n");
+	printf("Reg values: \n");
 	int i;
 	for(i=0; i<32; i++){
 		printf("	Reg #%d = %d\n",i,reg[i]);
@@ -49,7 +52,7 @@ void printMem(){
 	// printf("Mem values after pipeline: \n");
 	int i;
 	for(i=0; i<1200; i++){
-		printf("Mem #%d = %d	",i,mem.memory[i]);
+		if(mem.memory[i]) printf("Mem #%d = %d	",i,mem.memory[i]);
 	}
 }
 
@@ -63,6 +66,7 @@ int main(){
 
 	//instructionIndex = IF.instructionIndex;
 
+	if(sp>31 || fp>31) printf("uh oh 1\n");
 	reg[sp] = IF.sp;
 	reg[fp] = IF.fp;
 	pc = IF.pc;
@@ -71,27 +75,21 @@ int main(){
 	printf("	fp = 0x%x\n",reg[fp]);
 	printf("	pc = %d\n",pc);
 
-	//int answer = 1;
-	pc--;
-	int j=1000;
-	while(j>0){
-		j--;
-	// while(pc){
-		//printf("\nInstruction Fetch:\n\n");
+	int answer = 1;
+	while(answer){
+		if(pc>=500){
+			printf("pc beyond 500\n");
+			printf("	pc = %d\n",pc);
+			return 0;
+		}
 		pc++;
-<<<<<<< HEAD
- 		//printf("\nInstruction: 0x%x\n",IF.instruction[pc]);
-		//printf("pc = %d\n",pc+1);
-=======
-		// printf("\nInstruction: 0x%x\n",IF.instruction[pc]);
-		// printf("pc = %d\n",pc+1);
->>>>>>> a8e4480e89c028edfdeeff5d6564159a91b1b12d
-
+ 		printf("\nInstruction: 0x%x\n",IF.instruction[pc]);
+		printf("pc = %d\n",pc);
 
 //Decode Pipeline//////////////////////////////////////////////////////////////////////////
 //printf("\nDecode:\n\n");
 		Decode id;
-
+		reg[0] = 0;
 		id.pc = pc;
 		id.input = IF.instruction[pc];
 
@@ -107,96 +105,39 @@ int main(){
 				shamt = id.shamt;
 				funct = id.funct;
 				pc = id.pc;
-
-<<<<<<< HEAD
-// 				printf("\nRecieved R-Type: \n");
-// 				printf("	 Rd = %d\n",reg[rd]);
-// 				printf("	 Rs = %d\n",reg[rs]);
-// 				printf("	 Rt = %d\n",reg[rt]);
-// 				printf("	 Shamt = %d\n",shamt);
-// 				printf("	 Function = 0x%x\n",funct); 
-=======
-				// printf("\nRecieved R-Type: \n");
-				// printf("	 Rd = %d\n",reg[rd]);
-				// printf("	 Rs = %d\n",reg[rs]);
-				// printf("	 Rt = %d\n",reg[rt]);
-				// printf("	 Shamt = %d\n",shamt);
-				// printf("	 Function = 0x%x\n",funct); 
->>>>>>> a8e4480e89c028edfdeeff5d6564159a91b1b12d
 				break;
 			case 0x2: 
 				id.decodeJ();
 				pc = id.pc;
+				if(ra>31 || ra<0) printf("1: trying to access out of bounds reg\n");
 				reg[ra] = id.ra;
-				address = id.address;
-
-<<<<<<< HEAD
-// 				printf("\nRecieved J-Type: \n");        
-// 				printf("	 pc = %d\n",pc+1);
-// 				printf("	 ra = 0x%x\n",reg[ra]);
-// 				printf("	 Address = 0x%x\n",address);    
-=======
-				// printf("\nRecieved J-Type: \n");        
-				// printf("	 pc = %d\n",pc+1);
-				// printf("	 ra = 0x%x\n",reg[ra]);
-				// printf("	 Address = 0x%x\n",address);    
->>>>>>> a8e4480e89c028edfdeeff5d6564159a91b1b12d
+				address = id.address;   
 				break;
 			case 0x3: 
 				id.decodeJ();
 				pc = id.pc;
+				if(ra>31 || ra<0) printf("2: trying to access out of bounds reg\n");
 				reg[ra] = id.ra;
-				address = id.address;
-
-<<<<<<< HEAD
-// 				printf("\nRecieved J-Type: \n");        
-// 				printf("	 pc = %d\n",pc+1);
-// 				printf("	 ra = 0x%x\n",reg[ra]);
-// 				printf("	 Address = 0x%x\n",address);    
-=======
-				// printf("\nRecieved J-Type: \n");        
-				// printf("	 pc = %d\n",pc+1);
-				// printf("	 ra = 0x%x\n",reg[ra]);
-				// printf("	 Address = 0x%x\n",address);    
->>>>>>> a8e4480e89c028edfdeeff5d6564159a91b1b12d
+				address = id.address;  
 				break;
 			case 0x1f:
 				id.special();
 				rd = id.rd;
-<<<<<<< HEAD
-// 				printf("\nRecieved Special Type: seb\n");
-// 				printf("	 Rd = %d\n",reg[rd]);	
-=======
-				// printf("\nRecieved Special Type: seb\n");
-				// printf("	 Rd = %d\n",reg[rd]);	
->>>>>>> a8e4480e89c028edfdeeff5d6564159a91b1b12d
 			default: 
 				id.decodeI();
 				rs = id.rs;
 				rt = id.rt;
 				pc = id.pc;
 				immediate = id.immediate;
-
-<<<<<<< HEAD
-// 				printf("\nRecieved I-Type: \n");
-// 				printf("	 pc = %d\n",pc+1);
-// 				printf("	 Rs = %d\n",reg[rs]);
-// 				printf("	 Rt = %d\n",reg[rt]);
-// 				printf("	 Immediate = %d\n",immediate);
-=======
-				// printf("\nRecieved I-Type: \n");
-				// printf("	 pc = %d\n",pc+1);
-				// printf("	 Rs = %d\n",reg[rs]);
-				// printf("	 Rt = %d\n",reg[rt]);
-				// printf("	 Immediate = %d\n",immediate);
->>>>>>> a8e4480e89c028edfdeeff5d6564159a91b1b12d
 				break;
 		}
-
+	
 //Execute Pipeline//////////////////////////////////////////////////////////////////////////
 //printf("Execute:\n\n");
 	Execute ex;
+	reg[0] = 0;
 	ex.opcode = opcode;
+	if(rd>31 || rt>31 || rs>31 || rd<0 || rt<0 || rs<0) printf("3: trying to access out of bounds reg\n");
 	ex.rd = reg[rd];
 	ex.rt = reg[rt];
 	ex.rs = reg[rs];
@@ -205,86 +146,66 @@ int main(){
 	ex.shamt = shamt;
 	ex.function = funct;
 	ex.pc = pc;
-
+		
 	switch(ex.opcode){
 		case 0: 
 			ex.executeR();
+			if(rd>31 || rd<0) printf("4: trying to access out of bounds reg\n");
 			reg[rd] = ex.rd;
-<<<<<<< HEAD
-// 			printf("Rd = %d to Reg #%d\n",reg[rd], rd);
-=======
-			// printf("Rd = %d to Reg #%d\n",reg[rd], rd);
->>>>>>> a8e4480e89c028edfdeeff5d6564159a91b1b12d
 			break;
 		case 0x2: //j-type
 			break;
 		case 0x1f: 
 			ex.special();
+			if(rt>31 || rt<0) printf("5: trying to access out of bounds reg\n");
 			reg[rt] = ex.rt;
-<<<<<<< HEAD
-// 			printf("Rt = %d to Reg #%d\n",reg[rt], rt);
-=======
-			// printf("Rt = %d to Reg #%d\n",reg[rt], rt);
->>>>>>> a8e4480e89c028edfdeeff5d6564159a91b1b12d
 		default: 
 			ex.executeI();
 			pc = ex.pc;
+			if(rt>31 || rt<0) printf("6: trying to access out of bounds reg\n");
 			reg[rt] = ex.rt;
-<<<<<<< HEAD
-// 			printf("Rt = %d to Reg #%d\n",reg[rt], rt);
-=======
-			// printf("Rt = %d to Reg #%d\n",reg[rt], rt);
->>>>>>> a8e4480e89c028edfdeeff5d6564159a91b1b12d
 	}
-
+	
 //Memory Pipeline//////////////////////////////////////////////////////////////////////////
 //printf("Memory:\n\n");
 
 	Memory mem;
+	reg[0] = 0;
 	mem.opcode = opcode;
+	if(rd>31 || rt>31 || rs>31 || rd<0 || rt<0 || rs<0) printf("7: trying to access out of bounds reg\n");
 	mem.rd = reg[rd];
 	mem.rt = reg[rt];
 	mem.rs = reg[rs];
+	mem.immediate = immediate;
 	mem.address = address;
 	mem.shamt = shamt;
 	mem.function = funct;
 	mem.pc = pc;
+	mem.cycleCount = cycleCount;
+		
+	printf("reg #%d = %d\n",rd,reg[rd]);
+	printf("reg #%d = %d\n",rt,reg[rs]);
+	printf("reg #%d = %d\n",rs,reg[rs]);
+	printf("address = %d\n",address);
 
-	mem.doMem();
+ 	mem.doMem();
 
 	if(mem.load){
-		reg[mem.rt] = mem.temp;
+		if(mem.rt>31 || mem.rt<0) printf("8: trying to access out of bounds reg\n");
+		reg[mem.rt] = rt;
 	}
-	else if (!mem.load){  
-		reg[rt] = mem.rt;
-	}
-	
+		
 // Write-Back Pipeline//////////////////////////////////////////////////////////////////////////
-
-<<<<<<< HEAD
-	//printReg();
-=======
-	// printReg();
->>>>>>> a8e4480e89c028edfdeeff5d6564159a91b1b12d
-
 ////////////////////////////////////END OF PIPELINE/////////////////////////////////////////////////////////////
 	cycleCount++;
-
+	
+	printf("Would you like to run another instruction? (1/0) --> ");
+	scanf("%d", &answer);
+	if(!answer){
+		printf("Final Cycle Count = %d\n",cycleCount);
 	}
-	// printf("Current Cycle Count = %d\n",cycleCount);
-	
-	// printf("pc = %d\n",pc+1);
-	
-<<<<<<< HEAD
-// 	// printf("Would you like to run another instruction? (1/0) --> ");
-// 	// scanf("%d", &answer);
-// 	// if(!answer){
-// 	// 	printf("Final Cycle Count = %d\n",cycleCount);
-// 	// 	//return(0);
-// 	// }
-
-// >>>>>>> d0a4b5a630f038b3a5739425b5db1b906990d1bd
-// 	}
+	reg[0] = 0;
+}
 
  	printMem();
  	printf("Final Cycle Count = %d\n",cycleCount);
@@ -345,70 +266,6 @@ int main(){
 // 		cout<<"cache hits= "<< newCache.numHits<<endl;
 // 	}
 // 	i--;
-=======
-
-	// printf("Would you like to run another instruction? (1/0) --> ");
-	// scanf("%d", &answer);
-	// if(!answer){
-	// 	printf("Final Cycle Count = %d\n",cycleCount);
-	// 	//return(0);
-	// }
-// 	printf("Would you like to run another instruction? (1/0) --> ");
-// 	scanf("%d", &answer);
-// 	if(!answer){
-// 		printf("Final Cycle Count = %d\n",cycleCount);
-// 		//return(0);
-// 	}
-	}
-
-	// printMem();
-	printf("Final Cycle Count = %d\n",cycleCount);
-	// printReg();
-	
-	
-// //**** Start cache bullshit ****////
-	iCache newCache;  
-	int testAddress= pc;
-	int tempPC=0;
-	for(int i=0; i<32 ; i++){
-		newCache.address[i]= (testAddress>>i)&1;	//put PC values into address array 
-	} 
-	newCache.PC= pc; 
-	newCache.parcePC();
-	int i=2;
-	while(i>0){
-		//run twice for testing purposes
-		if (newCache.access()){
-			cout<<"cacheHit!"<<endl;
-			cout<<"Data= "<< newCache.data<<endl; 
-			//Give information to IF.foo= blah
-		}
-		else{
-			//cache miss
-			cout<<"Cache Miss! Accessing main memory"<<endl;
-			tempPC= pc; //Change temp_PC to PC later
-			tempPC= pc-newCache.offset;
-			if (newCache.offset!=0){
-				cycleCount= cycleCount+6;
-			}
-			//Filling cache
-			for(int j= 0; j<newCache.blockSize; j++){
-				cout<<"PC= "<< tempPC+j <<endl;
-				printf("%x\n",IF.instruction[tempPC+j]);
-				newCache.idata[newCache.index][newCache.offset]= IF.instruction[tempPC+j];
-				cycleCount= cycleCount+2; 
-				// if(tempPC+j==pc && EARLY_START){
-				// 	//Early start, give IF information as soon as possible
-
-				// }
-			}
-				
-			cout<<"cache misses= "<<newCache.numMisses<<endl;
-			cout<<"cache hits= "<< newCache.numHits<<endl;
-		}
-		i--;
-	}
->>>>>>> a8e4480e89c028edfdeeff5d6564159a91b1b12d
 
 	return(0);
 

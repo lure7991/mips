@@ -17,9 +17,9 @@ void Fetch::fill(){
 		string instructionInput;
 		ifstream inputFile("instruction.txt");
 
-		instructionIndex = 0;
+		instructionIndex = 1;
 		if (inputFile.is_open()){
-			instructionIndex = 0;
+			instructionIndex = 1;
 			while (getline(inputFile,instructionInput)){
 				instruction[instructionIndex] = strtoul(instructionInput.substr(2, 10).c_str(), NULL, 16);
 				instructionIndex++;
@@ -28,7 +28,7 @@ void Fetch::fill(){
 		} 
 		instruction[instructionIndex] = -1;
 	
-		sp = instruction[0];
-		fp = instruction[1];
-		pc = instruction[5];
+		sp = instruction[1];
+		fp = instruction[2];
+		pc = instruction[6];
 }
