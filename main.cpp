@@ -192,7 +192,7 @@ int main(){
 
 	if(mem.load){
 		if(mem.rt>31 || mem.rt<0) printf("8: trying to access out of bounds reg\n");
-		reg[mem.rt] = rt;
+		reg[rt] = mem.rt;
 	}
 		
 // Write-Back Pipeline//////////////////////////////////////////////////////////////////////////
