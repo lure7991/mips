@@ -9,7 +9,10 @@
 #include "ID.hpp"
 #include "EX.hpp"
 #include "MEM.hpp"
-//#include "iCache.hpp"
+#include "iCache.hpp"
+
+#define EARLY_START true; //Turn on/off early start
+#define	ICACHE_ON	true; //Turn on/off iCache
 
 using namespace std;
 
@@ -38,16 +41,16 @@ void printReg(){
 	printf("Reg values after pipeline: \n");
 	int i;
 	for(i=0; i<32; i++){
-	printf("	Reg #%d = %d\n",i,reg[i]);
-}
+		printf("	Reg #%d = %d\n",i,reg[i]);
+	}
 }
 
 void printMem(){
-	printf("Mem values after pipeline: \n");
+	// printf("Mem values after pipeline: \n");
 	int i;
 	for(i=0; i<1200; i++){
-	printf("Mem #%d = %d	",i,mem.memory[i]);
-}
+		printf("Mem #%d = %d	",i,mem.memory[i]);
+	}
 }
 
 int main(){
@@ -70,12 +73,19 @@ int main(){
 
 	//int answer = 1;
 	pc--;
-	//while(answer){
-	while(pc){
+	int j=1000;
+	while(j>0){
+		j--;
+	// while(pc){
 		//printf("\nInstruction Fetch:\n\n");
 		pc++;
+<<<<<<< HEAD
  		//printf("\nInstruction: 0x%x\n",IF.instruction[pc]);
 		//printf("pc = %d\n",pc+1);
+=======
+		// printf("\nInstruction: 0x%x\n",IF.instruction[pc]);
+		// printf("pc = %d\n",pc+1);
+>>>>>>> a8e4480e89c028edfdeeff5d6564159a91b1b12d
 
 
 //Decode Pipeline//////////////////////////////////////////////////////////////////////////
@@ -98,12 +108,21 @@ int main(){
 				funct = id.funct;
 				pc = id.pc;
 
+<<<<<<< HEAD
 // 				printf("\nRecieved R-Type: \n");
 // 				printf("	 Rd = %d\n",reg[rd]);
 // 				printf("	 Rs = %d\n",reg[rs]);
 // 				printf("	 Rt = %d\n",reg[rt]);
 // 				printf("	 Shamt = %d\n",shamt);
 // 				printf("	 Function = 0x%x\n",funct); 
+=======
+				// printf("\nRecieved R-Type: \n");
+				// printf("	 Rd = %d\n",reg[rd]);
+				// printf("	 Rs = %d\n",reg[rs]);
+				// printf("	 Rt = %d\n",reg[rt]);
+				// printf("	 Shamt = %d\n",shamt);
+				// printf("	 Function = 0x%x\n",funct); 
+>>>>>>> a8e4480e89c028edfdeeff5d6564159a91b1b12d
 				break;
 			case 0x2: 
 				id.decodeJ();
@@ -111,10 +130,17 @@ int main(){
 				reg[ra] = id.ra;
 				address = id.address;
 
+<<<<<<< HEAD
 // 				printf("\nRecieved J-Type: \n");        
 // 				printf("	 pc = %d\n",pc+1);
 // 				printf("	 ra = 0x%x\n",reg[ra]);
 // 				printf("	 Address = 0x%x\n",address);    
+=======
+				// printf("\nRecieved J-Type: \n");        
+				// printf("	 pc = %d\n",pc+1);
+				// printf("	 ra = 0x%x\n",reg[ra]);
+				// printf("	 Address = 0x%x\n",address);    
+>>>>>>> a8e4480e89c028edfdeeff5d6564159a91b1b12d
 				break;
 			case 0x3: 
 				id.decodeJ();
@@ -122,16 +148,28 @@ int main(){
 				reg[ra] = id.ra;
 				address = id.address;
 
+<<<<<<< HEAD
 // 				printf("\nRecieved J-Type: \n");        
 // 				printf("	 pc = %d\n",pc+1);
 // 				printf("	 ra = 0x%x\n",reg[ra]);
 // 				printf("	 Address = 0x%x\n",address);    
+=======
+				// printf("\nRecieved J-Type: \n");        
+				// printf("	 pc = %d\n",pc+1);
+				// printf("	 ra = 0x%x\n",reg[ra]);
+				// printf("	 Address = 0x%x\n",address);    
+>>>>>>> a8e4480e89c028edfdeeff5d6564159a91b1b12d
 				break;
 			case 0x1f:
 				id.special();
 				rd = id.rd;
+<<<<<<< HEAD
 // 				printf("\nRecieved Special Type: seb\n");
 // 				printf("	 Rd = %d\n",reg[rd]);	
+=======
+				// printf("\nRecieved Special Type: seb\n");
+				// printf("	 Rd = %d\n",reg[rd]);	
+>>>>>>> a8e4480e89c028edfdeeff5d6564159a91b1b12d
 			default: 
 				id.decodeI();
 				rs = id.rs;
@@ -139,13 +177,21 @@ int main(){
 				pc = id.pc;
 				immediate = id.immediate;
 
+<<<<<<< HEAD
 // 				printf("\nRecieved I-Type: \n");
 // 				printf("	 pc = %d\n",pc+1);
 // 				printf("	 Rs = %d\n",reg[rs]);
 // 				printf("	 Rt = %d\n",reg[rt]);
 // 				printf("	 Immediate = %d\n",immediate);
+=======
+				// printf("\nRecieved I-Type: \n");
+				// printf("	 pc = %d\n",pc+1);
+				// printf("	 Rs = %d\n",reg[rs]);
+				// printf("	 Rt = %d\n",reg[rt]);
+				// printf("	 Immediate = %d\n",immediate);
+>>>>>>> a8e4480e89c028edfdeeff5d6564159a91b1b12d
 				break;
-	}
+		}
 
 //Execute Pipeline//////////////////////////////////////////////////////////////////////////
 //printf("Execute:\n\n");
@@ -164,19 +210,31 @@ int main(){
 		case 0: 
 			ex.executeR();
 			reg[rd] = ex.rd;
+<<<<<<< HEAD
 // 			printf("Rd = %d to Reg #%d\n",reg[rd], rd);
+=======
+			// printf("Rd = %d to Reg #%d\n",reg[rd], rd);
+>>>>>>> a8e4480e89c028edfdeeff5d6564159a91b1b12d
 			break;
 		case 0x2: //j-type
 			break;
 		case 0x1f: 
 			ex.special();
 			reg[rt] = ex.rt;
+<<<<<<< HEAD
 // 			printf("Rt = %d to Reg #%d\n",reg[rt], rt);
+=======
+			// printf("Rt = %d to Reg #%d\n",reg[rt], rt);
+>>>>>>> a8e4480e89c028edfdeeff5d6564159a91b1b12d
 		default: 
 			ex.executeI();
 			pc = ex.pc;
 			reg[rt] = ex.rt;
+<<<<<<< HEAD
 // 			printf("Rt = %d to Reg #%d\n",reg[rt], rt);
+=======
+			// printf("Rt = %d to Reg #%d\n",reg[rt], rt);
+>>>>>>> a8e4480e89c028edfdeeff5d6564159a91b1b12d
 	}
 
 //Memory Pipeline//////////////////////////////////////////////////////////////////////////
@@ -203,7 +261,11 @@ int main(){
 	
 // Write-Back Pipeline//////////////////////////////////////////////////////////////////////////
 
+<<<<<<< HEAD
 	//printReg();
+=======
+	// printReg();
+>>>>>>> a8e4480e89c028edfdeeff5d6564159a91b1b12d
 
 ////////////////////////////////////END OF PIPELINE/////////////////////////////////////////////////////////////
 	cycleCount++;
@@ -213,6 +275,7 @@ int main(){
 	
 	// printf("pc = %d\n",pc+1);
 	
+<<<<<<< HEAD
 // 	// printf("Would you like to run another instruction? (1/0) --> ");
 // 	// scanf("%d", &answer);
 // 	// if(!answer){
@@ -282,6 +345,70 @@ int main(){
 // 		cout<<"cache hits= "<< newCache.numHits<<endl;
 // 	}
 // 	i--;
+=======
+
+	// printf("Would you like to run another instruction? (1/0) --> ");
+	// scanf("%d", &answer);
+	// if(!answer){
+	// 	printf("Final Cycle Count = %d\n",cycleCount);
+	// 	//return(0);
+	// }
+// 	printf("Would you like to run another instruction? (1/0) --> ");
+// 	scanf("%d", &answer);
+// 	if(!answer){
+// 		printf("Final Cycle Count = %d\n",cycleCount);
+// 		//return(0);
+// 	}
+	}
+
+	// printMem();
+	printf("Final Cycle Count = %d\n",cycleCount);
+	// printReg();
+	
+	
+// //**** Start cache bullshit ****////
+	iCache newCache;  
+	int testAddress= pc;
+	int tempPC=0;
+	for(int i=0; i<32 ; i++){
+		newCache.address[i]= (testAddress>>i)&1;	//put PC values into address array 
+	} 
+	newCache.PC= pc; 
+	newCache.parcePC();
+	int i=2;
+	while(i>0){
+		//run twice for testing purposes
+		if (newCache.access()){
+			cout<<"cacheHit!"<<endl;
+			cout<<"Data= "<< newCache.data<<endl; 
+			//Give information to IF.foo= blah
+		}
+		else{
+			//cache miss
+			cout<<"Cache Miss! Accessing main memory"<<endl;
+			tempPC= pc; //Change temp_PC to PC later
+			tempPC= pc-newCache.offset;
+			if (newCache.offset!=0){
+				cycleCount= cycleCount+6;
+			}
+			//Filling cache
+			for(int j= 0; j<newCache.blockSize; j++){
+				cout<<"PC= "<< tempPC+j <<endl;
+				printf("%x\n",IF.instruction[tempPC+j]);
+				newCache.idata[newCache.index][newCache.offset]= IF.instruction[tempPC+j];
+				cycleCount= cycleCount+2; 
+				// if(tempPC+j==pc && EARLY_START){
+				// 	//Early start, give IF information as soon as possible
+
+				// }
+			}
+				
+			cout<<"cache misses= "<<newCache.numMisses<<endl;
+			cout<<"cache hits= "<< newCache.numHits<<endl;
+		}
+		i--;
+	}
+>>>>>>> a8e4480e89c028edfdeeff5d6564159a91b1b12d
 
 	return(0);
 
