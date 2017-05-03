@@ -38,6 +38,8 @@ void Decode::decodeR(){
 }
 
 void Decode::decodeI(){
+	bj = false;
+	
   rs = ((input >> 21) & 0b00000000000000000000000000011111);
   rt = ((input >> 16) & 0b00000000000000000000000000011111);
   immediate = (input & 0b00000000000000001111111111111111);
@@ -50,47 +52,40 @@ void Decode::decodeI(){
 	switch(opcode){
 		case 0x4: //printf("	Executing: beq\n");   
 							if(rs==rt){
-								//printf("	Branch Taken\n");
-								//pc = pc + 1 + branchAddress(immediate);
-								pc = pc + 1 + immediate;
+								bj = true;
+								pc = pc + immediate;
 							} 
-							//else printf("	Branch NOT Taken\n");
 							break;
 			case 0x5: //printf("	Executing: bne\n"); 
 							if(rs!=rt){
-								//printf("	Branch Taken\n");
-								//pc = pc + 1 + branchAddress(immediate);
-								pc = pc + 1 + immediate;
+								bj = true;
+								pc = pc + immediate;
 							} 
-							//else printf("	Branch NOT Taken\n");
 							break;
 			case 0x7: //printf("	Executing: bgtz\n"); 
 							if(rs>0){
-								//printf("	Branch Taken\n");
-								pc = pc + 1 + immediate;
+								bj = true;
+								pc = pc + immediate;
 							} 
-							//else printf("	Branch NOT Taken\n");
 							break;
 			case 0x6: //printf("	Executing: blez\n"); 
 							if(rs<=0){
-								//printf("	Branch Taken\n");
-								pc = pc + 1 + immediate;
+								bj = true;
+								pc = pc + immediate;
 							} 
-							//else printf("	Branch NOT Taken\n");
 							break;
 			case 0x1: //printf("	Executing: bltz\n"); 
 							if(rs<0){
-								//printf("	Branch Taken\n");
-								pc = pc + 1 + immediate;
+								bj = true;
+								pc = pc + immediate;
 							} 
-							//else printf("	Branch NOT Taken\n");
 							break;                            
 	}
 }
 
 void Decode::decodeJ(){
+	bj = false;
   address = (input & 0b00000011111111111111111111111111);
-	
 	pc += 1;
 	jumpAddress = (pc & 0b11110000000000000000000000000000)|(0b00000001111111111111111111111111 & address);
 	//jumpAddress = jumpAddress << 2;
@@ -98,9 +93,11 @@ void Decode::decodeJ(){
 	
 	switch(opcode){
 		case 0x2: //printf("\nExecuting: Jump\n");
+						bj = true;
 						pc = jumpAddress;
             break;
-		case 0x3: //printf("Executing: Jump and Link\n"); 
+		case 0x3: //printf("Executing: Jump and Link\n");
+						bj = true; 
 						ra = pc + 2;
 						pc = jumpAddress;
 						break;

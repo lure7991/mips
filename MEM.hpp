@@ -5,7 +5,7 @@
 class Memory{
 	public:
 			int opcode, function, shamt, immediate, address; 
-			int jumpAddress, pc, ra, rd, rt, rs, temp, index, cycleCount;
+			int jumpAddress, pc, ra, rd, rt, rs, temp, index;
 			bool load, error;
 			int memory[1200];
 			void doMem();
@@ -14,7 +14,7 @@ class Memory{
 void Memory::doMem(){
 	load = false;
 	switch(opcode){
-		case 0x28: printf("	Executing: sb\n");
+		case 0x28: //printf("	Executing: sb\n");
 							rt = rt & 0b00000000000000000000000011111111;
 							index = (rt + immediate) % 4;
 							rs = floor((rs + immediate)/4);
@@ -55,11 +55,11 @@ void Memory::doMem(){
 // 									if(rs>=1200 || rs<0) printf("4.2 accessing invalid memory\n");
 // 									memory[rs] = temp;
 									break;
-								default: printf("sb problem\n");
+								//default: printf("sb problem\n");
 							}
-							printf("%d --> m[%d]\n",rt,memory[rs]);
+							//printf("%d --> m #%d\n",memory[rs],rs);
 							break;
-		case 0x29: printf("	Executing: sh\n");
+		case 0x29: //printf("	Executing: sh\n");
 							rt = rt & 0b00000000000000001111111111111111;
 							index = (rt + immediate) % 4;
 							rs = floor((rs + immediate)/4);
@@ -82,18 +82,18 @@ void Memory::doMem(){
 // 									if(rs>=1200 || rs<0) printf("6.2 accessing invalid memory\n");
 // 									memory[rs] = temp;
 									break;
-								default: printf("sh problem\n");
+								//default: printf("sh problem\n");
 							}
-							printf("%d --> m[%d]\n",rt,memory[rs]);
+							//printf("%d --> m #%d\n",memory[rs],rs);
 							break;
-		case 0x2b: printf("	Executing: sw\n");
+		case 0x2b: //printf("	Executing: sw\n");
 							index = (rs + immediate) % 4;
 							rs = floor((rs + immediate)/4);
 							if(rs+index>=1200 || rs+index<0) printf("7 accessing invalid memory\n");
 							memory[rs+index] = rt;
-							printf("%d --> m[%d]\n",rt,rs+index);
+							//printf("%d --> m #%d\n",rt,rs+index);
 							break;
-		case 0x24: printf("	Executing: lbu\n");
+		case 0x24: //printf("	Executing: lbu\n");
 							load = true;
 							switch(immediate){
 								if((rs/4)>=1200 || rs/4<0) printf("accessing invalid memory\n");
@@ -113,11 +113,11 @@ void Memory::doMem(){
 									rt = (rt & 0xFFFFFF00) | ((memory[rs] << 24) & 0x000000FF);
 									//temp = (memory[rs/4] & 0x000000FF);
 									break;
-								default: printf("lbu problem\n");
+								//default: printf("lbu problem\n");
 							}
-							printf("Reg #%d <-- m[%d]\n", rt, temp);
+							//printf("rt = %d \n",rt);
 							break;
-			case 0x25: printf("	Executing: lhu\n");
+			case 0x25: //printf("	Executing: lhu\n");
 							load = true;
 							if((rs/4)>=1200 || rs/4<0) printf("accessing invalid memory\n");
 							switch(immediate){
@@ -129,20 +129,20 @@ void Memory::doMem(){
 									rt = (rt & 0xFFFF0000) | ((memory[rs] << 24) & 0x0000FFFF);
 									//temp = (memory[rs/4] & 0x0000FFFF);
 									break;
-								default: printf("lhu problem\n");
+								//default: printf("lhu problem\n");
 							}
-							printf("Reg #%d <-- m[%d]\n", rt, temp);
+							//printf("rt = %d \n",rt);
 							break;
-			case 0xf: printf("	Executing: lui\n");
+			case 0xf: //printf("	Executing: lui\n");
 							load = true;
 							rt = immediate & 0b11111111111111110000000000000000;
-							printf("m[%d] --> reg #%d \n",rs+immediate,rt);
+							printf("rt = %d \n",rt);
 							break;
-			case 0x23: printf("	Executing: lw\n");
+			case 0x23: //printf("	Executing: lw\n");
 							load = true;
 							if(((rs+immediate)/4)>=1200 || (rs+immediate)/4<0) printf("accessing invalid memory\n");
 							rt = memory[(rs+immediate)/4];
-							printf("m[%d] --> reg #%d \n",rs+immediate,rt);
+							//printf("rt = %d \n",rt);
 							break;
 	}
 }

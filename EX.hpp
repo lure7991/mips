@@ -15,7 +15,7 @@ void Execute::executeR(){
 						rd = rs + rt;
             break;
 		case 0x21: //printf("Executing: addu\n"); 
-	  				rd = rs + rt;          
+						rd = rs + rt;          
 						break;
 		case 0x24: //printf("Executing: and\n");
             rd = rs & rt;

@@ -30,6 +30,7 @@ int ra = 31;
 
 int bjPC;
 bool bj = false;
+int branchOn = 0;
 
 int opcode;
 int rd;
@@ -63,26 +64,26 @@ int main(){
 	Fetch IF;
 
 	IF.fill();
-
-	//instructionIndex = IF.instructionIndex;
-
+	
 	if(sp>31 || fp>31) printf("uh oh 1\n");
 	reg[sp] = IF.sp;
 	reg[fp] = IF.fp;
 	pc = IF.pc;
 
-	printf("	sp = 0x%x\n",reg[sp]);
-	printf("	fp = 0x%x\n",reg[fp]);
+	printf("	sp = %d\n",reg[sp]);
+	printf("	fp = %d\n",reg[fp]);
 	printf("	pc = %d\n",pc);
 
 	int answer = 1;
 	while(answer){
+	//while(pc){
 		if(pc>=500){
 			printf("pc beyond 500\n");
 			printf("	pc = %d\n",pc);
 			return 0;
 		}
 		pc++;
+		if(pc == branchOn) pc = bjPC;
  		printf("\nInstruction: 0x%x\n",IF.instruction[pc]);
 		printf("pc = %d\n",pc);
 
@@ -91,6 +92,7 @@ int main(){
 		Decode id;
 		reg[0] = 0;
 		id.pc = pc;
+		id.bj = false;
 		id.input = IF.instruction[pc];
 
 		id.setOP();
@@ -104,18 +106,15 @@ int main(){
 				rt = id.rt;
 				shamt = id.shamt;
 				funct = id.funct;
-				pc = id.pc;
 				break;
 			case 0x2: 
 				id.decodeJ();
-				pc = id.pc;
 				if(ra>31 || ra<0) printf("1: trying to access out of bounds reg\n");
 				reg[ra] = id.ra;
 				address = id.address;   
 				break;
 			case 0x3: 
 				id.decodeJ();
-				pc = id.pc;
 				if(ra>31 || ra<0) printf("2: trying to access out of bounds reg\n");
 				reg[ra] = id.ra;
 				address = id.address;  
@@ -127,11 +126,16 @@ int main(){
 				id.decodeI();
 				rs = id.rs;
 				rt = id.rt;
-				pc = id.pc;
 				immediate = id.immediate;
 				break;
 		}
-	
+		
+		bj = id.bj;
+		if(bj){
+			bjPC = id.pc;
+			branchOn = pc + 2;
+		}
+		else if(!bj){
 //Execute Pipeline//////////////////////////////////////////////////////////////////////////
 //printf("Execute:\n\n");
 	Execute ex;
@@ -159,11 +163,14 @@ int main(){
 			ex.special();
 			if(rt>31 || rt<0) printf("5: trying to access out of bounds reg\n");
 			reg[rt] = ex.rt;
+			break;
 		default: 
 			ex.executeI();
 			pc = ex.pc;
 			if(rt>31 || rt<0) printf("6: trying to access out of bounds reg\n");
 			reg[rt] = ex.rt;
+			//printf("rt = %d --> reg #%d\n",reg[rt], rt);
+			break;
 	}
 	
 //Memory Pipeline//////////////////////////////////////////////////////////////////////////
@@ -173,28 +180,25 @@ int main(){
 	reg[0] = 0;
 	mem.opcode = opcode;
 	if(rd>31 || rt>31 || rs>31 || rd<0 || rt<0 || rs<0) printf("7: trying to access out of bounds reg\n");
-	mem.rd = reg[rd];
+	//mem.rd = reg[rd];
+	
 	mem.rt = reg[rt];
 	mem.rs = reg[rs];
 	mem.immediate = immediate;
-	mem.address = address;
-	mem.shamt = shamt;
-	mem.function = funct;
-	mem.pc = pc;
-	mem.cycleCount = cycleCount;
+	//mem.address = address;
+	//mem.shamt = shamt;
+	//mem.function = funct;
 		
-	printf("reg #%d = %d\n",rd,reg[rd]);
-	printf("reg #%d = %d\n",rt,reg[rs]);
-	printf("reg #%d = %d\n",rs,reg[rs]);
-	printf("address = %d\n",address);
+	//mem.pc = pc;
+	//mem.cycleCount = cycleCount;
 
  	mem.doMem();
-
+		
 	if(mem.load){
 		if(mem.rt>31 || mem.rt<0) printf("8: trying to access out of bounds reg\n");
 		reg[rt] = mem.rt;
 	}
-		
+		}
 // Write-Back Pipeline//////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////END OF PIPELINE/////////////////////////////////////////////////////////////
 	cycleCount++;
