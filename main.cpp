@@ -86,6 +86,7 @@ int main(){
 		if(pc == branchOn) pc = bjPC;
  		printf("\nInstruction: 0x%x\n",IF.instruction[pc]);
 		printf("pc = %d\n",pc);
+		printf("sp = %d\n",sp);
 
 //Decode Pipeline//////////////////////////////////////////////////////////////////////////
 //printf("\nDecode:\n\n");
