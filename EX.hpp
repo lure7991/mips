@@ -28,6 +28,7 @@ void Execute::executeR(){
             break;
 		case 0x25: //printf("Executing: or\n");
             rd = rs | rt;
+						printf("or: %d = %d | %d\n",rd,rs,rt);
             break;
 		case 0x2a: //printf("Executing: slt\n");
             if(rs < rt) rd = 1;
@@ -39,6 +40,7 @@ void Execute::executeR(){
             break;
 		case 0x00: //printf("Executing: sll\n");
             rd = rt << shamt;
+			printf("sll: %d = %d << %d\n",rd,rt,shamt);
             break;
 		case 0x02: //printf("Executing: srl\n");
             rd = rt >> shamt;
@@ -77,6 +79,7 @@ void Execute::executeI(){
             break;
 		case 0x9: //printf("Executing: addiu\n"); 
 						rt = rs + immediate;
+						printf("%d = %d + %d\n",rt,rs,immediate);
             break;
 		case 0xc: //printf("Executing: andi\n"); 
 						rt = rs & immediate;

@@ -67,16 +67,18 @@ int main(){
 	
 	if(sp>31 || fp>31) printf("uh oh 1\n");
 	reg[sp] = IF.sp;
-	reg[fp] = IF.fp;
+	reg[fp] = IF.fp/4;
 	pc = IF.pc;
 
 	printf("	sp = %d\n",reg[sp]);
 	printf("	fp = %d\n",reg[fp]);
 	printf("	pc = %d\n",pc);
 
-	int answer = 1;
-	while(answer){
+	//int answer = 1;
+	//while(answer){
 	//while(pc){
+	int w;
+	for(w=0;w<1000;w++){
 		if(pc>=500){
 			printf("pc beyond 500\n");
 			printf("	pc = %d\n",pc);
@@ -86,7 +88,7 @@ int main(){
 		if(pc == branchOn) pc = bjPC;
  		printf("\nInstruction: 0x%x\n",IF.instruction[pc]);
 		printf("pc = %d\n",pc);
-		printf("sp = %d\n",sp);
+		printf("sp = %d\n",reg[sp]);
 
 //Decode Pipeline//////////////////////////////////////////////////////////////////////////
 //printf("\nDecode:\n\n");
@@ -204,11 +206,11 @@ int main(){
 ////////////////////////////////////END OF PIPELINE/////////////////////////////////////////////////////////////
 	cycleCount++;
 	
-	printf("Would you like to run another instruction? (1/0) --> ");
-	scanf("%d", &answer);
-	if(!answer){
-		printf("Final Cycle Count = %d\n",cycleCount);
-	}
+// 	printf("Would you like to run another instruction? (1/0) --> ");
+// 	scanf("%d", &answer);
+// 	if(!answer){
+// 		printf("Final Cycle Count = %d\n",cycleCount);
+// 	}
 	reg[0] = 0;
 }
 

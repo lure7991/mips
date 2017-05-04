@@ -111,7 +111,7 @@ void Memory::doMem(){
 							load = true;
 							if(((rs+immediate)/4)>=1200 || (rs+immediate)/4<0) printf("accessing invalid memory\n");
 							rt = memory[(rs+immediate)/4];
-							printf("rt = %d \n",rt);
+							printf("<-- (rt = %d)\n",rt);
 							break;
 	}
 }
