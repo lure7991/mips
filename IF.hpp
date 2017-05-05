@@ -8,7 +8,7 @@ using namespace std;
 class Fetch{
 	 public:
 	 	int instructionIndex, sp, fp, pc;
-		int instruction[500];
+		int instruction[1200];
 		void fill();
 
 } IF; 

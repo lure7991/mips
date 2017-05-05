@@ -73,6 +73,10 @@ int main(){
 	printf("	sp = %d\n",reg[sp]);
 	printf("	fp = %d\n",reg[fp]);
 	printf("	pc = %d\n",pc);
+	
+	Memory mem;
+	int fill;
+	for(fill=0;fill<1200;fill++) mem.memory[fill] = IF.instruction[fill];
 
 	//int answer = 1;
 	//while(answer){
@@ -179,7 +183,6 @@ int main(){
 //Memory Pipeline//////////////////////////////////////////////////////////////////////////
 //printf("Memory:\n\n");
 
-	Memory mem;
 	reg[0] = 0;
 	mem.opcode = opcode;
 	if(rd>31 || rt>31 || rs>31 || rd<0 || rt<0 || rs<0) printf("7: trying to access out of bounds reg\n");
