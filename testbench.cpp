@@ -9,12 +9,6 @@
 #include "ID.hpp"
 #include "EX.hpp"
 #include "MEM.hpp"
-#include "iCache.hpp"
-#include "dCache.hpp"
-
-#define EARLY_START true	 //Turn on/off early start
-#define	ICACHE_ON	true 	//Turn on/off iCache
-#define WRITE_POLICY	"WRITE_THROUGH"
 
 using namespace std;
 
@@ -43,10 +37,6 @@ int funct;
 int address;
 int immediate;
 
-bool memoryValid[1200];
-int writeBuffer= 0;
-int missPenalty=0;
-
 void printReg(){
 	printf("Reg values: \n");
 	int i;
@@ -59,7 +49,8 @@ void printMem(){
 	// printf("Mem values after pipeline: \n");
 	int i;
 	for(i=0; i<1200; i++){
-		if(mem.memory[i]) printf("Mem #%d = %d	",i,mem.memory[i]);
+// 		if(mem.memory[i]) 
+			printf("Mem #%d = %d	",i,mem.memory[i]);
 	}
 }
 
@@ -77,7 +68,7 @@ int main(){
 	pc = IF.pc;
 
 	printf("	sp = %d\n",reg[sp]);
-	printf("	fp = %d\n",reg[fp]);
+	//printf("	fp = %d\n",reg[fp]);
 	printf("	pc = %d\n",pc);
 	
 	Memory mem;
@@ -85,8 +76,8 @@ int main(){
 	for(fill=0;fill<1200;fill++) mem.memory[fill] = IF.instruction[fill];
 
 	//while(pc){
-// 	int w;
-// 	for(w=0;w<1771;w++){
+//  	int w;
+//  	for(w=0;w<20000;w++){
 // 		if(pc>=500){
 // 			printf("pc beyond 500\n");
 // 			printf("	pc = %d\n",pc);
@@ -116,37 +107,56 @@ int main(){
 		switch(id.opcode){
 			case 0: 
 				id.decodeR();
+				printf("R-Type\n");
 				rd = id.rd;
 				rs = id.rs;
 				rt = id.rt;
 				shamt = id.shamt;
 				funct = id.funct;
+				//printf("rd = %d\n",rd);
+				//printf("rs = %d\n",rs);
+				//printf("rt = %d\n",rt);
+				//printf("shift amount = %d\n",shamt);
+				//printf("function = %d\n",funct);
 				break;
 			case 0x2: 
 				id.decodeJ();
+				printf("J-Type\n");
 				if(ra>31 || ra<0) printf("1: trying to access out of bounds reg\n");
 				reg[ra] = id.ra;
 				address = id.address;   
+				printf("ra = %d\n",reg[ra]);
+				printf("address = %d\n",address);
 				break;
 			case 0x3: 
 				id.decodeJ();
+				printf("J-Type\n");
 				if(ra>31 || ra<0) printf("2: trying to access out of bounds reg\n");
 				reg[ra] = id.ra;
 				address = id.address;  
+				printf("ra = %d\n",reg[ra]);
+				printf("address = %d\n",address);
 				break;
 			case 0x1f:
 				id.special();
+				printf("Special-Type\n");
 				rd = id.rd;
+				printf("rd = %d\n",rd);
 			default: 
 				id.decodeI();
+				printf("I-Type\n");
 				rs = id.rs;
 				rt = id.rt;
 				immediate = id.immediate;
+				//printf("rs = %d\n",rs);
+				//printf("rt = %d\n",rt);
+				//printf("immediate = %d\n",immediate);
 				break;
 		}
 		
 		bj = id.bj;
 		if(bj){
+			printf("Branch Taken\n");
 			bjPC = id.pc + 1;
 			branchOn = pc + 2;
 		}
@@ -217,157 +227,20 @@ int main(){
 ////////////////////////////////////END OF PIPELINE/////////////////////////////////////////////////////////////
 	cycleCount++;
 	
-// 	printf("Would you like to run another instruction? (1/0) --> ");
-// 	scanf("%d", &answer);
-// 	if(!answer){
-// 		printf("Final Cycle Count = %d\n",cycleCount);
-// 	}
 	reg[0] = 0;
-//}
+			
 	printf("Would you like to run another instruction? (1/0) --> ");
 	scanf("%d", &answer);
+	//if(cycleCount>=20000) answer = false;
 	if(!answer){
 		printf("Final Cycle Count = %d\n",cycleCount);
 	}
 }
 
- 	//printMem();
+ 	printMem();
  	printf("Final Cycle Count = %d\n",cycleCount);
  	printReg();
 
-
-// //**** Start cache ****////
-	iCache newCache;  
-	int testAddress=pc;
-	int tempPC=0;
-	for(int ii=0; ii<32 ; ii++){
-		newCache.address[ii]= (testAddress>>ii)&1;	//put PC values into address array 
-	} 
-	newCache.PC= pc; 
-	newCache.parcePC_icache();
-		//run twice for testing purposes
-		// switch (newCache.access()){
-		// 	case true:
-		// 	cout<<"cacheHit!"<<endl;
-		// 	cout<<"Data= "<< newCache.data<<endl; 
-
-		// }
-		if (newCache.access()){
-			cout<<"cacheHit!"<<endl;
-			cout<<"Data= "<< newCache.data<<endl; 
-			//Give information to IF.foo= blah
-		}
-		else{
-			missPenalty=0;
-			//cache miss
-			cout<<"Cache Miss! Accessing main memory"<<endl;
-			tempPC= pc; //Change temp_PC to PC later
-			tempPC= pc-newCache.offset;
-			if (newCache.offset!=0){
-				cycleCount= cycleCount+6;
-			}
-			//Filling cache
-			for(int jj= 0; jj<newCache.blockSize; jj++){
-				cout<<"PC= "<< tempPC+jj <<endl;
-				printf("%x\n",IF.instruction[tempPC+jj]);
-				newCache.idata[newCache.index][newCache.offset]= IF.instruction[tempPC+jj];
-				missPenalty= missPenalty+2; 
-			}
-			cycleCount= cycleCount+missPenalty; 
-			if(EARLY_START){
-				cycleCount= cycleCount+missPenalty-(newCache.blockSize-1-newCache.offset);					
-				}
-			cout<<"cache misses= "<<newCache.numMisses<<endl;
-			cout<<"cache hits= "<< newCache.numHits<<endl;
-			cout<<"Cache hit rate= "<<newCache.hitRate<<endl;
-		}
-		//ii--;
-
-	//*** Start dCache ***//
-	dCache dcache;
-	int dAddress= mem.rs;
-	dcache.PC=mem.rs; 
-	int tempAddress=0;
-	for(int ii=0; ii<32 ; ii++){
-		dcache.address[ii]= (tempAddress>>ii)&1;	//put PC values into address array 
-	} 
-	dcache.parcePC_dcache();
-	tempAddress=0; 
-
-	//Dcache hit
-	if(dcache.access()){
-			if(!dcache.write){
-				reg[rt]= dcache.data;
-			}
-			else if(dcache.write){
-				tempAddress= dAddress-dcache.offset;		
-				for(int kk= 0; kk<dcache.blockSize; kk++){
-					dcache.dData[dcache.index][dcache.offset]= mem.memory[tempAddress+kk];
-				}
-				if(WRITE_POLICY=="WRITE_THROUGH"){
-					mem.memory[dAddress]= dcache.data;		//write from dCache to memory 
-				}
-				else if(WRITE_POLICY=="WRITE_BACK"){
-					dcache.dirtyBit[dcache.index]= true;
-				}
-			}
-	}
-
-	else if(!dcache.access()){
-		missPenalty=0; 
-		if (dcache.offset!=0){
-			cycleCount= cycleCount+6;
-		}
-
-		//Write through cache
-		if (WRITE_POLICY=="WRITE_THROUGH"){
-			//write to cache from memory
-			missPenalty=0;
-			tempAddress= dAddress-dcache.offset;		
-			if(writeBuffer>0){
-				cycleCount+=writeBuffer;
-			}
-			//fill cache
-			for(int kk= 0; kk<dcache.blockSize; kk++){
-				dcache.dData[dcache.index][dcache.offset]= mem.memory[tempAddress+kk];
-				missPenalty= missPenalty+2;  	//6 cycle penalty for mem access
-			}
-				
-			if(!dcache.write){
-				//send information back into pipeline
-				reg[rt]= dcache.data;
-				cycleCount= cycleCount+missPenalty; 
-
-			}
-			if(dcache.write){
-				writeBuffer=6; 
-				mem.memory[dAddress]= dcache.dData[dcache.index][dcache.offset]; //Write through always writes to memory
-				cycleCount= cycleCount+missPenalty+writeBuffer; 
-			}
-		}
-
-		else if (WRITE_POLICY=="WRITE_BACK"){
-			if(writeBuffer>0){
-				cycleCount+=writeBuffer;
-			}
-			for(int kk= 0; kk<dcache.blockSize; kk++){
-				dcache.dData[dcache.index][dcache.offset]= mem.memory[tempAddress+kk];
-				missPenalty= missPenalty+2;  	//6 cycle penalty for mem access
-			}
-			if(dcache.dcacheValid[dcache.index]==1 && dcache.dirtyBit[dcache.index]==1){
-				//discrepency b/t memory and cache, need to write to memory
-				writeBuffer= 6+(dcache.blockSize-1)*2;		 
-			}
-			if(!dcache.write){
-				// reg[value]= mem.memory[dcache.dData[dcache.index][dcache.offset]];
-				cycleCount= cycleCount+missPenalty; 
-			}
-			if(dcache.write){
-				dcache.dirtyBit[dcache.index]= 1;
-				mem.memory[dAddress]= dcache.dData[dcache.index][dcache.offset]; 
-			}
-//write back to memory and then fill in cache
 	return(0);
-	}
-	}
+
 }

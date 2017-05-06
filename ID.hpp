@@ -50,31 +50,31 @@ void Decode::decodeI(){
   }
 	
 	switch(opcode){
-		case 0x4: //printf("	Executing: beq\n");   
+		case 0x4: printf("Executing: beq\n");   
 							if(rs==rt){
 								bj = true;
 								pc = pc + immediate;
 							} 
 							break;
-			case 0x5: //printf("	Executing: bne\n"); 
+			case 0x5: printf("Executing: bne\n"); 
 							if(rs!=rt){
 								bj = true;
 								pc = pc + immediate;
 							} 
 							break;
-			case 0x7: //printf("	Executing: bgtz\n"); 
+			case 0x7: printf("Executing: bgtz\n"); 
 							if(rs>0){
 								bj = true;
 								pc = pc + immediate;
 							} 
 							break;
-			case 0x6: //printf("	Executing: blez\n"); 
+			case 0x6: printf("Executing: blez\n"); 
 							if(rs<=0){
 								bj = true;
 								pc = pc + immediate;
 							} 
 							break;
-			case 0x1: //printf("	Executing: bltz\n"); 
+			case 0x1: printf("Executing: bltz\n"); 
 							if(rs<0){
 								bj = true;
 								pc = pc + immediate;
@@ -92,13 +92,13 @@ void Decode::decodeJ(){
 	//printf("Jump Address = %d\n",jumpAddress);
 	
 	switch(opcode){
-		case 0x2: //printf("\nExecuting: Jump\n");
+		case 0x2: printf("\nExecuting: Jump\n");
 						bj = true;
 						pc = jumpAddress;
             break;
-		case 0x3: //printf("Executing: Jump and Link\n");
+		case 0x3: printf("Executing: Jump and Link\n");
 						bj = true; 
-						ra = pc + 2;
+						ra = pc + 1;
 						pc = jumpAddress;
 						break;
 		//default: printf("Invalid Command\n");

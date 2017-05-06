@@ -21,8 +21,8 @@ using namespace std;
 
 class iCache {
 	public:
-		int pendingMemory;
 
+		int hitRate;
 		int cacheSize;
 		int blockSize;
 
@@ -39,24 +39,21 @@ class iCache {
 		int data;
 		int address[32];
 
-		int cacheIndex[CACHE_SIZE];
-		int cacheTag[CACHE_SIZE];
-		bool cacheValid[CACHE_SIZE];
+		int icacheIndex[CACHE_SIZE];
+		int icacheTag[CACHE_SIZE];
+		bool icacheValid[CACHE_SIZE];
 		int idata[((CACHE_SIZE/4)/BLOCK_SIZE)][BLOCK_SIZE]; 
 
 
-		// int icache [iCACHE_HEIGHT_MAX][iCACHE_WIDTH];
-		bool cacheHit;
-		bool fillingCache;
+		bool icacheHit;
 		int numMisses;
 		int numHits;
 		
 		iCache ();
-		void parcePC();
+		void parcePC_icache();
 		void icacheInit();
 		void memorySetup();
 		bool access();
-		bool cacheWrite();
 		int arrayToBinary(int left, int right);
 
 };
@@ -68,14 +65,12 @@ iCache::iCache (){
 	offsetSize=0;
 	indexSize=0;
 	tagSize=0;
-	pendingMemory=0;
 
 	offset= 0b0;
 	index= 0b0;
 	tag= 0b0;
 	data= 0b0;
-	cacheHit= false;
-	fillingCache= false;
+	icacheHit= false;
 	numMisses= 0;
 	numHits= 0;
 
@@ -86,9 +81,9 @@ iCache::iCache (){
 	}
 
 	for (int i=0; i<CACHE_SIZE; i++){
-		cacheIndex[i]=i;
-		cacheTag[i]= -1; 	//init cache tag to invalid data
-		cacheValid[i]= false;
+		icacheIndex[i]=i;
+		icacheTag[i]= -1; 	//init cache tag to invalid data
+		icacheValid[i]= false;
 	}
 
 
@@ -102,95 +97,54 @@ int iCache::arrayToBinary(int left, int right){
 	return retVal;	
 }
 
-void iCache::parcePC(){
+void iCache::parcePC_icache(){
 //** initilize offset, index, and tag using address **//
 //** setup cache size and fill index/valid bits **//
 
 	cout<<BLOCK_SIZE<<endl; 
 	offsetSize= log2(BLOCK_SIZE); 
 	offset= arrayToBinary(offsetSize, 0);
-
-	//setup index, which is size log(cache_size)
 	indexSize= log2(CACHE_SIZE/4)-offsetSize;
-
 
 	cout<<"Cache size= "<< CACHE_SIZE<< endl;
 	cout<< "Index size= "<< indexSize << endl;
 	cout<<"Offset Size= "<< offsetSize<<endl;
+
 	index= arrayToBinary(indexSize+offsetSize, offsetSize);		//index will be from the offset size up till the index size
+	
 	cout<<"Index = "<< index <<endl;	
 	cout<<"Offset= "<< offset <<endl; 
 
 	//setup tag
 	tagSize= 32-indexSize-2; 
-	cout<< "Tag size= "<< tagSize<<endl;
 	tag= arrayToBinary(tagSize+indexSize, indexSize);	//index size till end
+	
+	cout<< "Tag size= "<< tagSize<<endl;
 	cout<<"Tag= "<< tag<<endl;
 }
-void iCache::icacheInit(){
-	//setup memory from pipeline to here
 
-}
 bool iCache::access(){
 	
-	//Brandon math for miss clock cycles (6+2)*offsets
-
-	pendingMemory= offset; 
-
-	
-
-	cacheTag[0]= 74565404;
-	// cacheValid[0]= false;
-	// idata[0][0]= 100;
-	// idata[0][1]=22;
-	// // idata[0][2]= 18;
-	// idata[0][3]= 44;
-
-	cout<< "Data= "<< idata[index][offset]<<endl;
-	cout<<"valid= "<<cacheValid[index]<<endl;
-	// for (int i=0; i<((CACHE_SIZE/4)/BLOCK_SIZE); i++){
-	// 	for(int j=0; j<BLOCK_SIZE; j++){
-	// 			cout<< "i= "<<i<<endl;
-	// 			cout<<"j= "<<j<<endl;
-	// 			cout<<"Begin maddness:"<<idata[i][j]<<endl;
-	// 	}
-	// }
-
-	
-	if(!fillingCache){
-		if(cacheTag[index]==tag && cacheValid[index]==true){
-			data= idata[index][offset];
-			numHits++;
-			cacheHit=true;
-			return cacheHit;
-		}
-		else if((cacheTag[index]!=tag && cacheValid[index]==true) || (cacheTag[index]!=tag && cacheValid[index]==false)){
-			//cache miss
-			//access main memory
-			cacheTag[index]= tag;
-			cacheValid[index]= true;
-			cacheHit=false;
-			numMisses++;
-			return cacheHit;
-		}
+	if(icacheTag[index]==tag && icacheValid[index]==true){
+		data= idata[index][offset];
+		numHits++;
+		icacheHit=true;
+		return icacheHit;
 	}
-
-
-	//Read data from cache using given address
-	// if(fillingCache){
-	// 	//wait for the cache to be done filling up
-	// 	//Count down some clock cycles to wait ->counts as a cache miss
-	// }
+	else if((icacheTag[index]!=tag && icacheValid[index]==true) || (icacheTag[index]!=tag && icacheValid[index]==false)){
+		icacheTag[index]= tag;
+		icacheValid[index]= true;
+		icacheHit=false;
+		numMisses++;
+		return icacheHit;
+	}
+	hitRate= numHits/(numHits+numMisses);
+	return hitRate;
+	//hit, set dirty bit to 1
+	//miss , check policy if WB check dirty, if 1 update mem with cache before reload 
+	//dirty bit zero, cache and mem the same
+	//update contents, set to 0
+	//hits always make it 1
 	//compare cache tag to tag of address to see if cache entry is there
 	//if tag and valid bit are true, then read is a hit
 }
-
-
-// I want to check the index of PC with the index of my cache
-	//So, index points to some block in the cache related to said index
-	//That block is size[tag bit+valid]
-	//That block data has size [blocksize * 32]
-// Then I want to go into that block/line at that index and check my tag and valid
-// If those are cool, then I want to grab the data
-// It they ain't chillas, then I need to go to memory starting at ~00 of the index till the end of the ~11 of the index 
-// essentially bit shift and take a shit when fill my block bitches
